@@ -1,11 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
+export enum TODO_LIST_TYPE {
+  PRIVATE = 'private',
+  SHARED = 'shared',
+  PUBLIC = 'public',
+}
+
 @Entity('todo_list')
 export class TodoList {
   @PrimaryGeneratedColumn()
-  public id!: number;
+  id!: number;
 
   @Column()
-  public name?: string;
+  name: string;
 
+  @Column({type: 'text', enum: TODO_LIST_TYPE})
+  type: TODO_LIST_TYPE
 }

@@ -16,6 +16,12 @@ const basePath: string = '/todo-lists';
  *       properties:
  *         name:
  *           type: string
+ *         type:
+ *           type: enum
+ *           enum: [public, private, shared]
+ *       required:
+ *           - name
+ *           - type
  *
  * paths:
  *   /todo-lists:
@@ -23,6 +29,13 @@ const basePath: string = '/todo-lists';
  *       summary: Get all todo lists
  *       description: Get all todo lists
  *       tags: [Todo List]
+ *       parameters:
+ *         - in: query
+ *           name: type
+ *           description: Filter taqwfst42odo lists by type
+ *           schema:
+ *             type: string
+ *             enum: [public, private, shared]  
  *       responses:
  *         200:
  *           description: Successful

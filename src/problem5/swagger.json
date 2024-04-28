@@ -17,6 +17,21 @@
         "tags": [
           "Todo List"
         ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "description": "Filter todo lists by type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "public",
+                "private",
+                "shared"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful",
@@ -184,8 +199,20 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "type": {
+            "type": "enum",
+            "enum": [
+              "public",
+              "private",
+              "shared"
+            ]
           }
-        }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
       }
     }
   },

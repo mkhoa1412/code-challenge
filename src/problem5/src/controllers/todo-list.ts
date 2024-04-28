@@ -1,6 +1,6 @@
 // src/controllers/todoList.ts
 
-import { Request, Response } from 'express';
+import { Request, Response, query } from 'express';
 import { TodoListService } from '../services/todo-list';
 
 export class TodoListController {
@@ -8,7 +8,8 @@ export class TodoListController {
 
   getAllTodoLists = async (req: Request, res: Response) => {
     try {
-      const todoLists = await this.todoListService.getAllTodoLists();
+      const where = req.query
+      const todoLists = await this.todoListService.getAllTodoLists(where);
       res.json(todoLists);
     } catch (error) {
       res.status(500).json(error);
@@ -26,9 +27,9 @@ export class TodoListController {
   };
 
   createTodoList = async (req: Request, res: Response) => {
-    const { name } : { name: string } = req.body;
+    const data = req.body;
     try {
-      const todoList = await this.todoListService.createTodoList(name);
+      const todoList = await this.todoListService.createTodoList(data);
       res.status(201).json(todoList);
     } catch (error) {
       res.status(400).json(error);
@@ -37,9 +38,9 @@ export class TodoListController {
 
   updateTodoList = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name } : { name: string } = req.body;
+    const data = req.body;
     try {
-      const todoList = await this.todoListService.updateTodoList(Number(id), name);
+      const todoList = await this.todoListService.updateTodoList(Number(id), data);
       res.json(todoList);
     } catch (error) {
       res.status(400).json(error);

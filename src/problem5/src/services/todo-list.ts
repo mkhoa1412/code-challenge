@@ -1,29 +1,31 @@
 // src/services/todoList.ts
 
+import { FindOptionsWhere } from 'typeorm';
 import { AppDataSource } from '../dbs/sqlite';
-import { TodoList } from '../entities';
+import { TODO_LIST_TYPE, TodoList } from '../entities';
 
 export class TodoListService {
   private todoListRepository = AppDataSource.getRepository(TodoList);
 
-  async getAllTodoLists(): Promise<TodoList[]> {
-    return this.todoListRepository.find();
+  async getAllTodoLists(where?: FindOptionsWhere<TodoList>): Promise<TodoList[]> {
+    console.log({first: where})
+    return this.todoListRepository.find({
+      where
+    });
   }
 
   async getTodoListById(id: number): Promise<TodoList | null> {
     return this.todoListRepository.findOneBy({ id });
   }
 
-  async createTodoList(name: string): Promise<TodoList> {
-    const todoList = new TodoList();
-    todoList.name = name;
-    return this.todoListRepository.save(todoList);
+  async createTodoList(data: Partial<TodoList>): Promise<TodoList> {
+    return this.todoListRepository.save(data);
   }
 
-  async updateTodoList(id: number, name: string): Promise<TodoList | null> {
+  async updateTodoList(id: number, data?: Partial<TodoList>): Promise<TodoList | null> {
     const todoList = await this.getTodoListById(id);
     if (!todoList) return null;
-    todoList.name = name;
+    Object.assign(todoList, data);
     return this.todoListRepository.save(todoList);
   }
 
