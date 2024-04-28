@@ -61,7 +61,7 @@ npm run start:dev
 
 Open http://localhost:3000 or your configured port in your browser
 
-6. Access the Swagger UI by opening your browser and navigating to http://localhost:3000/api-docs(change the host and port number if needed)
+6. Access the Swagger UI by opening your browser and navigating to http://localhost:3000/api-docs (change the host and port number if needed)
 
 7. Run the application in production mode:
 
