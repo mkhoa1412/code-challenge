@@ -9,19 +9,46 @@
 </head>
 
 <body>
+  <section class="container">
+    <img src="https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/SWTH.svg" alt="money image" class="container__money" />
+  
+    <!-- You may reorganise the whole HTML, as long as your form achieves the same effect. -->
+    <form class="container__form" onsubmit="return !1">
+      <div class="form__title">
+        <h3>Swap</h3>
+      </div>
 
-  <!-- You may reorganise the whole HTML, as long as your form achieves the same effect. -->
-  <form onsubmit="return !1">
-    <h5>Swap</h5>
-    <label for="input-amount">Amount to send</label>
-    <input id="input-amount" />
+      <div class="container__currency">
+        <label class="container__label" for="input-amount">Amount to send</label>
+        <input class="container__input" id="input-amount" type="number" placeholder="0" value="1" required  minlength="1" maxlength="999999999"/>
+        <select class="container__select" id="currency-1">
+          <option value="USD" selected>USD</option>
+          <option value="UYU">UYU</option>
+          <option value="VND">VND</option>
+          <option value="ZAR">ZAR</option>
+        </select>
+      </div>
+      <p class="container__error" id="error"></p>
 
-    <label for="output-amount">Amount to receive</label>
-    <input id="output-amount" />
+      <div class="container__currency">
+        <label class="container__label" for="output-amount">Amount to receive</label>
+        <input class="container__input container__input--disabled"  id="output-amount" placeholder="0" value="1" />
+        <select class="container__select" id="currency-2">
+          <option value="USD" selected>USD</option>
+          <option value="UYU">UYU</option>
+          <option value="VND">VND</option>
+          <option value="ZAR">ZAR</option>
+        </select>
+      </div>
 
-    <button>CONFIRM SWAP</button>
-  </form>
-  <script src="script.js"></script>
+      <div class="container__bottom">
+        <button class="container__btn" type="submit" onClick="validate()">swap</button>
+        <div class="container__rate" id="rate"></div>
+      </div>
+    </form>
+  </section>
+  <script src="js/script.js"></script>
+  <script src="js/fetchData.js"></script>
 </body>
 
 </html>
