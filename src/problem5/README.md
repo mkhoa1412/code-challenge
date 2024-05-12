@@ -11,13 +11,46 @@ This is repo running with NodeJS
 - docker-compose: >= v2.23.3-desktop.2
 - npm => 10.7.0
 
-After you clone the repo, please do following steps
+## To run this API locally, follow these steps:
 
-```bash
-make build_application
+1. Clone this repository.
+2. Install dependencies using npm install.
+3. npm run watch.
+4. npm run start
+5. make build_application
+6. The API will be accessible at http://localhost:3000.
 
-# development
-$ npm install
-$ npm run watch
-$ npm run start
-```
+## Documentation API
+
+| Method | Endpoint    | Description       |
+| ------ | ----------- | ----------------- |
+| GET    | /users      | Get all users     |
+| GET    | /users/{id} | Get user by ID    |
+| POST   | /users      | Create a new user |
+| POST   | /users/{id} | Update user by ID |
+| DELETE | /users/{id} | Delete user by ID |
+
+# GET /users
+Retrieves a list of all users.
+
+# GET /users/{id}
+Retrieves a specific user by their unique identifier (uuid).
+
+# POST /users
+Creates a new user. Requires a JSON object representing the user in the request body with the following fields:
+
+firstName (string)
+lastName (string)
+email (string)
+password (string)
+
+# PUT /users/{id}
+Updates an existing user with the specified ID. Requires a JSON object representing the updated user in the request body with the following fields:
+
+firstName (string)
+lastName (string)
+email (string)
+password (string)
+
+# DELETE /users/{id}
+Deletes a user with the specified ID.
