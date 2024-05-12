@@ -31,15 +31,12 @@ This is repo running with NodeJS
 | DELETE | /users/{id} | Delete user by ID |
 
 # GET /users
-
 Retrieves a list of all users.
 
 # GET /users/{id}
-
 Retrieves a specific user by their unique identifier (uuid).
 
 # POST /users
-
 Creates a new user. Requires a JSON object representing the user in the request body with the following fields:
 
 firstName (string)
@@ -48,7 +45,6 @@ email (string)
 password (string)
 
 # PUT /users/{id}
-
 Updates an existing user with the specified ID. Requires a JSON object representing the updated user in the request body with the following fields:
 
 firstName (string)
@@ -57,5 +53,4 @@ email (string)
 password (string)
 
 # DELETE /users/{id}
-
 Deletes a user with the specified ID.
