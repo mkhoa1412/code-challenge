@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import { ErrorResponse } from './core/errorResponse';
+import { swaggerDocs } from './utils/swagger';
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use(express.json());
 
 app.use(pagination);
 
+swaggerDocs(app, process.env.DEV_APP_PORT || 3000);
+
 app.use('', router);
 app.get('/', (_, res) => {
   res.status(200).json({
@@ -33,14 +36,14 @@ app.get('/', (_, res) => {
   });
 });
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((_req: Request, _res: Response, next: NextFunction) => {
   const error = new Error('Not Found');
   (error as any).code = 404;
   next(error);
 });
 
 app.use(
-  (error: ErrorResponse, req: Request, res: Response, _next: NextFunction) => {
+  (error: ErrorResponse, _req: Request, res: Response, _next: NextFunction) => {
     const code = error.code || 500;
     const errors = error.errors || [];
 
