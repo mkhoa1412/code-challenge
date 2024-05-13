@@ -41,20 +41,17 @@ export default class UserService {
 
   /**
    * Retrieves all users.
-   * @param req - The request object.
    * @returns A Promise that resolves to the list of users.
    */
-  async getAll(req: Request) {
+  async getAll() {
     try {
-      const query = req.query.search;
       const users = await getConnection()
         .getRepository(User)
         .createQueryBuilder('user')
-        .where('user.firstName like :name', { name: `${query ? query : '%'}%` })
         .orderBy('user.timestamp', 'DESC')
         .paginate();
 
-      const { data, ...rest } = users;
+      const { data } = users;
 
       const newUsers: unknown[] = [];
 

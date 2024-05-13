@@ -7,8 +7,8 @@ export const createUser = async (req: Request, res: Response) => {
   new Created({ metadata: await new UserService().create(req) }).send(res);
 };
 
-export const getAllUsers = async (req: Request, res: Response) => {
-  new OK({ metadata: await new UserService().getAll(req) }).send(res);
+export const getAllUsers = async (_req: Request, res: Response) => {
+  new OK({ metadata: await new UserService().getAll() }).send(res);
 };
 
 export const getUserById = async (req: AuthRequest, res: Response) => {
