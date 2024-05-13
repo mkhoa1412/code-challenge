@@ -8,7 +8,6 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import { ErrorResponse } from './core/errorResponse';
-import { swaggerDocs } from './utils/swagger';
 
 dotenv.config();
 
@@ -24,8 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(pagination);
-
-swaggerDocs(app, process.env.DEV_APP_PORT || 3000);
 
 app.use('', router);
 app.get('/', (_, res) => {
