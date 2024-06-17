@@ -1,0 +1,4 @@
+The children prop is destructured from props but never used. If it's not needed, you can remove it.
+
+The FormattedWalletBalance interface extends WalletBalance but doesn't add any new properties. If there's no additional functionality planned for this interface, you can remove it and use WalletBalance directly.
+The blockchain property is used in getPriority function and balances filter, but it's not defined in the WalletBalance interface. You should add it to the interface.
