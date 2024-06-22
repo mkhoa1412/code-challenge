@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 interface WalletBalance {
   currency: string;
   amount: number;
@@ -12,9 +11,18 @@ interface FormattedWalletBalance {
   amount: number;
   formatted: string;
 }
-
+interface BoxProps {}
 interface Props extends BoxProps {}
 
+// function external
+const useWalletBalances = (): WalletBalance[] => {
+  return [];
+};
+// function external
+const usePrices = () => {
+  //handle
+  return;
+};
 const WalletPage: React.FC<Props> = (props: Props) => {
   const { ...rest } = props;
 
@@ -44,21 +52,13 @@ const WalletPage: React.FC<Props> = (props: Props) => {
         const balancePriority = getPriority(balance.blockchain);
         return balancePriority > -99 && balance.amount <= 0;
       })
-      .sort((lhs: WalletBalance, rhs: WalletBalance) => {
-        const leftPriority = getPriority(lhs.blockchain);
-        const rightPriority = getPriority(rhs.blockchain);
-        return rightPriority - leftPriority;
-      });
+      .sort(
+        (lhs: WalletBalance, rhs: WalletBalance) =>
+          getPriority(rhs.blockchain) - getPriority(lhs.blockchain)
+      );
   }, [balances]);
 
-  const formattedBalances = sortedBalances.map((balance: WalletBalance) => {
-    return {
-      ...balance,
-      formatted: balance.amount.toFixed(),
-    };
-  });
-
-  const rows = formattedBalances.map(
+  const rows = sortedBalances.map(
     (balance: FormattedWalletBalance, index: number) => {
       const usdValue = prices[balance.currency] * balance.amount;
       return (
@@ -67,7 +67,7 @@ const WalletPage: React.FC<Props> = (props: Props) => {
           key={index}
           amount={balance.amount}
           usdValue={usdValue}
-          formattedAmount={balance.formatted}
+          formattedAmount={balance.amount.toFixed()}
         />
       );
     }
