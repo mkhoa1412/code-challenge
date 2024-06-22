@@ -1,0 +1,7 @@
+1./ List out the computational inefficiencies and anti-patterns found in the code block below.
+
+** Summary **
+- The children prop is destructured from props but never used. If it's not needed, you can remove it.
+- Use blockchain property not exist in interface "WalletBalance". I can add blockchain property into interface "WalletBalance"
+- Use variables when not declared. I can declare varible before used to it
+- Assign a specific interface "blockchainProp" instead of use "any" type
