@@ -1,0 +1,25 @@
+var sum_to_n_a = function (n) {
+    var sum = 0;
+    for (var i = 1; i <= n; i++) {
+        sum += i;
+    }
+    return sum;
+};
+
+var sum_to_n_b = function (n) {
+    return (n * (n + 1)) / 2;
+};
+
+var sum_to_n_c = function (n) {
+    if (n <= 1) {
+        return n;
+    } else {
+        return n + sum_to_n_c(n - 1);
+    }
+};
+
+n = 5
+
+console.log(sum_to_n_a(n));
+console.log(sum_to_n_b(n));
+console.log(sum_to_n_c(n));

@@ -1,0 +1,17 @@
+#Line 13: 
+    Destructuring children and the rest of the props is unnecessary since they're 
+    not directly used within the component.
+
+#Line 34 to line 55: 
+    The filtering logic in useMemo can be simplified by filtering
+    out balances with zero or negative amounts directly in the initial balances.filter 
+    call. This avoids the redundant check for lhsPriority being greater than -99.
+
+    The sorting logic in useMemo can be optimized by returning early if leftPriority 
+    equals rightPriority. This avoids unnecessary comparisons when priorities are the same.
+
+#Line 57 to 62
+    the spread operator (...balance) is not needed since the object properties are being
+    directly assigned new values.
+    formatted property is directly calculated so create formattedBalances is redundant.
+
