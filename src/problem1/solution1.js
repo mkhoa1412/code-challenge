@@ -45,8 +45,3 @@ var sum_to_n_c = function (n) {
 var sum_to_n_d = function (n) {
     return n > 1 ? n + sum_to_n_c(--n) : n
 };
-
-console.log(sum_to_n_a(1000));
-console.log(sum_to_n_b(1000));
-console.log(sum_to_n_c(1000));
-console.log(sum_to_n_d(1000));
