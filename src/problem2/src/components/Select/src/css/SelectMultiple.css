@@ -1,0 +1,9 @@
+.SelectMultiple__container.yy-select {
+  width: 100%;
+}
+
+.SelectMultiple__loading {
+  padding-bottom: 16px;
+  padding-top: 16px;
+  text-align: center;
+}

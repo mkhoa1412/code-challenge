@@ -1,0 +1,34 @@
+.Field__container {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.Field__label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.Field__required-mark {
+  color: rgb(255, 77, 79);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-right: 4px;
+}
+
+.Field__error {
+  color: rgb(255, 77, 79);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.Field__help {
+  color: rgb(115, 115, 115);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
