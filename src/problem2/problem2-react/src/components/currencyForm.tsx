@@ -1,23 +1,42 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { API_BASE, getDate, inputGroupClassNames } from "../AppUtil";
-import DropdownButton, { CurrencyListType } from "./DropdownButton";
+import { API_BASE} from "../AppUtil";
+import DropdownButton from "./DropdownButton";
 import NumberInput from "./NumberInput";
+import { CurrencyConfig } from "../types";
+import CurrenciesRateInfo from "./CurrenciesRateInfo";
 type FormValues = {
-  currencyToSend: string;
+  currencyToSend: CurrencyConfig;
+  currencyToReceive: CurrencyConfig;
   amountToSend: number;
-  currencyToReceive: string;
   amountToReceive: number;
 };
 
+const renderInputGroup = (
+  currencyList: CurrencyConfig[],
+  inputName: string,
+  dropdownName: string,
+  placeholder: string,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+) => {
+  return (
+    <div className="sm:flex sm:gap-2 space-y-2 sm:space-y-0">
+      <DropdownButton name={dropdownName} list={currencyList} />
+      <NumberInput
+        name={inputName}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
+    </div>
+  );
+};
+
 export default function CurrencyForm() {
-  const [currencyList, setCurrencyList] = useState<CurrencyListType[]>([]);
+  const [currencyList, setCurrencyList] = useState<CurrencyConfig[]>([]);
   const methods = useForm<FormValues>({
     defaultValues: {
       amountToSend: 0,
       amountToReceive: 0,
-      currencyToSend: "",
-      currencyToReceive: "",
     },
     mode: "onChange",
   });
@@ -28,7 +47,8 @@ export default function CurrencyForm() {
     const fetchCurrencies = async () => {
       try {
         const response = await fetch(API_BASE);
-        const data: CurrencyListType[] = await response.json();
+        const data: CurrencyConfig[] = await response.json();
+        // Filter duplicate values
         const filteredData = Array.from(
           data
             .reduce((map, item) => map.set(item.currency, item), new Map())
@@ -37,8 +57,8 @@ export default function CurrencyForm() {
         setCurrencyList(filteredData);
 
         // Set the default currency for currency to send and receive on load
-        setValue("currencyToSend", filteredData[0].currency);
-        setValue("currencyToReceive", filteredData[1].currency);
+        setValue("currencyToSend", filteredData[0]);
+        setValue("currencyToReceive", filteredData[1]);
       } catch (error) {
         console.error("Failed to fetch currency data:", error);
       }
@@ -46,24 +66,20 @@ export default function CurrencyForm() {
 
     fetchCurrencies();
   }, [setValue]);
-  const selectedCurrencyToSend = currencyList.find(
-    (currency) => currency.currency === watch("currencyToSend")
-  );
-  const selectedCurrencyToReceive = currencyList.find(
-    (currency) => currency.currency === watch("currencyToReceive")
-  );
+
+  const currencyToSend = watch("currencyToSend");
+  const currencyToReceive = watch("currencyToReceive");
+
   const calculateAmountToReceive = (amount: number) => {
-    if (selectedCurrencyToSend && selectedCurrencyToReceive) {
-      const rate =
-        selectedCurrencyToSend.price / selectedCurrencyToReceive.price;
+    if (currencyToSend && currencyToReceive) {
+      const rate = currencyToSend.price / currencyToReceive.price;
       setValue("amountToReceive", amount * rate, { shouldValidate: true });
     }
   };
 
   const calculateAmountToSend = (amount: number) => {
-    if (selectedCurrencyToSend && selectedCurrencyToReceive) {
-      const rate =
-        selectedCurrencyToReceive.price / selectedCurrencyToSend.price;
+    if (currencyToSend && currencyToReceive) {
+      const rate = currencyToReceive.price / currencyToSend.price;
       setValue("amountToSend", amount * rate, { shouldValidate: true });
     }
   };
@@ -71,22 +87,23 @@ export default function CurrencyForm() {
   // Watch the selected currencies and amount to send
 
   const amountToSend = watch("amountToSend");
+  const amountToReceive = watch("amountToReceive");
   // Recalculate the amount to receive whenever the currencies or amount to send change
   useEffect(() => {
     calculateAmountToReceive(amountToSend);
-  }, [selectedCurrencyToSend, selectedCurrencyToReceive, amountToSend]);
+  }, [currencyToSend, currencyToReceive, amountToSend]);
 
   const handleSwap = () => {
-    const tempAmountToSend = methods.getValues("amountToSend");
-    const tempCurrencyToSend = methods.getValues("currencyToSend");
+    if (amountToSend && currencyToSend && currencyToReceive) {
+      const tempAmountToSend = amountToSend;
+      const tempCurrencyToSend = currencyToSend;
 
-    setValue("currencyToSend", methods.getValues("currencyToReceive"));
-    setValue("currencyToReceive", tempCurrencyToSend);
+      setValue("currencyToSend", currencyToReceive);
+      setValue("currencyToReceive", tempCurrencyToSend);
 
-    setValue("amountToSend", methods.getValues("amountToReceive"));
-    setValue("amountToReceive", tempAmountToSend);
-
-    calculateAmountToReceive(tempAmountToSend);
+      setValue("amountToSend", amountToReceive);
+      setValue("amountToReceive", tempAmountToSend);
+    }
   };
 
   return (
@@ -95,36 +112,34 @@ export default function CurrencyForm() {
         <form noValidate={true} className="space-y-2">
           <div className="relative sm:flex sm:gap-2">
             <div className="space-y-12 sm:space-y-2 flex-grow">
-              <div className={inputGroupClassNames}>
-                <DropdownButton name="currencyToSend" list={currencyList} />
-                <NumberInput
-                  name="amountToSend"
-                  placeholder="Amount to send"
-                  onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    if (value < 0) {
-                      setValue("amountToSend", 0);
-                    } else {
-                      calculateAmountToReceive(value);
-                    }
-                  }}
-                />
-              </div>
-              <div className={inputGroupClassNames}>
-                <DropdownButton name="currencyToReceive" list={currencyList} />
-                <NumberInput
-                  name="amountToReceive"
-                  placeholder="Amount to receive"
-                  onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    if (value < 0) {
-                      setValue("amountToReceive", 0);
-                    } else {
-                      calculateAmountToSend(value);
-                    }
-                  }}
-                />
-              </div>
+              {renderInputGroup(
+                currencyList,
+                "amountToSend",
+                "currencyToSend",
+                "Amount to send",
+                (e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value < 0) {
+                    setValue("amountToSend", 0);
+                  } else {
+                    calculateAmountToReceive(value);
+                  }
+                }
+              )}
+              {renderInputGroup(
+                currencyList,
+                "amountToReceive",
+                "currencyToReceive",
+                "Amount to receive",
+                (e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value < 0) {
+                    setValue("amountToReceive", 0);
+                  } else {
+                    calculateAmountToSend(value);
+                  }
+                }
+              )}
             </div>
             <button
               type="button"
@@ -140,20 +155,11 @@ export default function CurrencyForm() {
           </div>
         </form>
       </FormProvider>
-      {selectedCurrencyToReceive && selectedCurrencyToSend && (
-        <div className="font-bold mt-2">
-          <p>
-            <span>1</span> {selectedCurrencyToSend.currency} =
-          </p>
-          <p className="text-2xl ">
-            {`${
-              selectedCurrencyToSend.price / selectedCurrencyToReceive.price
-            } ${selectedCurrencyToReceive.currency}`}
-          </p>
-          <p className="font-normal ">
-            Updated on {getDate(selectedCurrencyToSend.date)}
-          </p>
-        </div>
+      {currencyToReceive && currencyToSend && (
+        <CurrenciesRateInfo
+          fromCurrency={currencyToSend}
+          toCurrency={currencyToReceive}
+        />
       )}
     </div>
   );

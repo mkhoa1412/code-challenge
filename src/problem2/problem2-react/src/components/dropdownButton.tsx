@@ -1,17 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-
-export type CurrencyListType = {
-  currency: string;
-  date: string;
-  price: number;
-};
+import { CurrencyConfig } from "../types";
 
 type DropdownInputProps = {
   label?: string;
   name: string;
-  list: CurrencyListType[];
+  list: CurrencyConfig[];
 };
 
 export default function DropdownButton({
@@ -22,15 +17,15 @@ export default function DropdownButton({
   const { register, setValue, watch } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const selectedItem = watch(name);
+  const selectedItem = watch(name)?.currency;
 
   // Register the field in the form
   useEffect(() => {
     register(name);
   }, [register, name]);
 
-  const handleSelect = (item: CurrencyListType) => {
-    setValue(name, item.currency);
+  const handleSelect = (item: CurrencyConfig) => {
+    setValue(name, item);
     setIsOpen(false);
   };
 
@@ -81,7 +76,7 @@ export default function DropdownButton({
 
   return (
     <div ref={dropdownRef} className="relative sm:w-1/4">
-      <label className="text-black">
+      <label>
         {label}
         <button
           type="button"

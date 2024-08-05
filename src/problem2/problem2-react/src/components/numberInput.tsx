@@ -39,8 +39,8 @@ export default function NumberInput({
           })}
           className="text-white w-full rounded p-2 border border-transparent outline-none focus:border-indigo-500 focus:shadow-md transition-all"
           whileFocus={{
-            borderColor: "rgba(99, 102, 241, 1)",
             boxShadow: "0 0 8px rgba(99, 102, 241, 0.8)",
+            transition: { ease: "easeInOut" },
           }}
         />
         <AnimatePresence>
