@@ -1,4 +1,4 @@
-import CurrencyForm from "./components/currencyForm";
+import CurrencyForm from "./components/CurrencyForm";
 
 function App() {
   return (

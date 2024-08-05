@@ -12,40 +12,27 @@ type DropdownInputProps = {
   label?: string;
   name: string;
   list: CurrencyListType[];
-  onChange: (currency: CurrencyListType) => void;
-  defaultValue?: string;
 };
 
 export default function DropdownButton({
   label,
   name,
   list,
-  onChange,
-  defaultValue,
 }: DropdownInputProps) {
-  const { setValue } = useFormContext();
+  const { register, setValue, watch } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] =
-    useState<CurrencyListType | null>(null);
+  const selectedItem = watch(name);
 
+  // Register the field in the form
   useEffect(() => {
-    if (defaultValue) {
-      const defaultCurrency = list.find(
-        (item) => item.currency === defaultValue
-      );
-      if (defaultCurrency) {
-        setSelectedCurrency(defaultCurrency);
-        setValue(name, defaultValue);
-      }
-    }
-  }, [defaultValue, list, name, setValue]);
+    register(name);
+  }, [register, name]);
 
-  const handleSelect = (currency: CurrencyListType) => {
-    setSelectedCurrency(currency);
-    onChange(currency);
-    setValue(name, currency.currency);
+  const handleSelect = (item: CurrencyListType) => {
+    setValue(name, item.currency);
     setIsOpen(false);
   };
+
   const containerVariants = {
     hidden: { height: 0 },
     visible: {
@@ -56,6 +43,7 @@ export default function DropdownButton({
       },
     },
   };
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
@@ -63,26 +51,25 @@ export default function DropdownButton({
       opacity: 1,
     },
   };
+
   return (
     <div className="relative w-1/4">
       <label className="text-black">
         {label}
         <button
           type="button"
-          className="text-left bg-slate-400 bg-opacity-30 rounded-md shadow-sm flex justify-center items-center w-full py-2 "
+          className="text-left bg-slate-400 bg-opacity-30 rounded-md shadow-sm flex justify-center items-center w-full py-2"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {selectedCurrency ? (
+          {selectedItem && (
             <>
               <img
-                src={`/${selectedCurrency.currency}.svg`}
-                alt={selectedCurrency.currency}
-                className="inline-block w-4 h-4 mr-2"
+                src={`/${selectedItem}.svg`}
+                alt={selectedItem}
+                className="inline-block size-6 mr-2"
               />
-              {selectedCurrency.currency}
+              {selectedItem}
             </>
-          ) : (
-            "Select currency"
           )}
         </button>
       </label>
@@ -107,7 +94,6 @@ export default function DropdownButton({
                   alt={item.currency}
                   className="inline-block size-10 mr-2"
                 />
-
                 <div>
                   <p className="font-bold">{item.currency}</p>
                   <span className="block text-sm text-slate-500">
