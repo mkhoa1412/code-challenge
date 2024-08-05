@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,6 +21,7 @@ export default function DropdownButton({
 }: DropdownInputProps) {
   const { register, setValue, watch } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedItem = watch(name);
 
   // Register the field in the form
@@ -32,6 +33,32 @@ export default function DropdownButton({
     setValue(name, item.currency);
     setIsOpen(false);
   };
+
+  // Close the dropdown if clicking outside of it or hitting "Escape"
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   const containerVariants = {
     hidden: { height: 0 },
@@ -53,7 +80,7 @@ export default function DropdownButton({
   };
 
   return (
-    <div className="relative w-1/4">
+    <div ref={dropdownRef} className="relative sm:w-1/4">
       <label className="text-black">
         {label}
         <button
@@ -73,6 +100,7 @@ export default function DropdownButton({
           )}
         </button>
       </label>
+      {/**Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <motion.ul
@@ -80,14 +108,14 @@ export default function DropdownButton({
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-80 overflow-auto"
+            className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-80 overflow-auto w-full sm:w-max"
           >
             {list.map((item) => (
               <motion.li
                 key={item.currency}
                 onClick={() => handleSelect(item)}
                 variants={itemVariants}
-                className="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-200"
+                className="flex items-center px-1 sm:p-4 space-y-2 cursor-pointer hover:bg-gray-200 text-black"
               >
                 <img
                   src={`/${item.currency}.svg`}

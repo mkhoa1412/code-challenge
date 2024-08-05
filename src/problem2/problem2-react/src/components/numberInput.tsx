@@ -6,7 +6,7 @@ interface NumberInputProps {
   label?: string;
   placeholder?: string;
   value?: number;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function NumberInput({
@@ -20,7 +20,9 @@ export default function NumberInput({
     register,
     formState: { errors },
   } = useFormContext();
-
+  const validateRule = (value: number) => {
+    return value > 0 ? true : "Value must be greater than 0";
+  };
   return (
     <div className="w-full">
       <label className="flex flex-col h-full">
@@ -31,7 +33,8 @@ export default function NumberInput({
           value={value}
           {...register(name, {
             required: "This field is required",
-            min: { message: "must be greater than 0", value: 0 },
+            valueAsNumber: true,
+            validate: validateRule,
             onChange: (e) => onChange(e),
           })}
           className="text-white w-full rounded p-2 border border-transparent outline-none focus:border-indigo-500 focus:shadow-md transition-all"
@@ -44,9 +47,9 @@ export default function NumberInput({
           {errors[name] && (
             <motion.span
               layout
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
               className="text-red-500 font-bold text-sm"
             >
               {errors[name]?.message?.toString()}

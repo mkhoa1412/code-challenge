@@ -1,9 +1,8 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { API_BASE, inputGroupClassNames } from "../AppUtil";
+import { API_BASE, getDate, inputGroupClassNames } from "../AppUtil";
 import DropdownButton, { CurrencyListType } from "./DropdownButton";
 import NumberInput from "./NumberInput";
-
 type FormValues = {
   currencyToSend: string;
   amountToSend: number;
@@ -20,6 +19,7 @@ export default function CurrencyForm() {
       currencyToSend: "",
       currencyToReceive: "",
     },
+    mode: "onChange",
   });
   const { setValue, watch } = methods;
 
@@ -46,53 +46,35 @@ export default function CurrencyForm() {
 
     fetchCurrencies();
   }, [setValue]);
-
+  const selectedCurrencyToSend = currencyList.find(
+    (currency) => currency.currency === watch("currencyToSend")
+  );
+  const selectedCurrencyToReceive = currencyList.find(
+    (currency) => currency.currency === watch("currencyToReceive")
+  );
   const calculateAmountToReceive = (amount: number) => {
-    const selectedCurrencyToSend = currencyList.find(
-      (currency) => currency.currency === watch("currencyToSend")
-    );
-    const selectedCurrencyToReceive = currencyList.find(
-      (currency) => currency.currency === watch("currencyToReceive")
-    );
     if (selectedCurrencyToSend && selectedCurrencyToReceive) {
       const rate =
         selectedCurrencyToSend.price / selectedCurrencyToReceive.price;
-      setValue("amountToReceive", amount * rate);
+      setValue("amountToReceive", amount * rate, { shouldValidate: true });
     }
   };
 
   const calculateAmountToSend = (amount: number) => {
-    const selectedCurrencyToSend = currencyList.find(
-      (currency) => currency.currency === watch("currencyToSend")
-    );
-    const selectedCurrencyToReceive = currencyList.find(
-      (currency) => currency.currency === watch("currencyToReceive")
-    );
     if (selectedCurrencyToSend && selectedCurrencyToReceive) {
       const rate =
         selectedCurrencyToReceive.price / selectedCurrencyToSend.price;
-      setValue("amountToSend", amount * rate);
+      setValue("amountToSend", amount * rate, { shouldValidate: true });
     }
   };
 
-  const onSubmit = (data: FormValues) => console.log(data);
-
   // Watch the selected currencies and amount to send
-  const currentCurrencyToSend = watch("currencyToSend");
-  const currentCurrencyToReceive = watch("currencyToReceive");
-  const amountToSend = watch("amountToSend");
 
+  const amountToSend = watch("amountToSend");
   // Recalculate the amount to receive whenever the currencies or amount to send change
   useEffect(() => {
-    if (currencyList.length > 0) {
-      calculateAmountToReceive(amountToSend);
-    }
-  }, [
-    currentCurrencyToSend,
-    currentCurrencyToReceive,
-    amountToSend,
-    currencyList,
-  ]);
+    calculateAmountToReceive(amountToSend);
+  }, [selectedCurrencyToSend, selectedCurrencyToReceive, amountToSend]);
 
   const handleSwap = () => {
     const tempAmountToSend = methods.getValues("amountToSend");
@@ -108,11 +90,11 @@ export default function CurrencyForm() {
   };
 
   return (
-    <div className="max-w-screen-md w-2/3 bg-white rounded shadow-md p-4 text-black">
+    <div className="max-w-screen-md sm:w-2/3 bg-zinc-700 rounded shadow-md p-4 text-white">
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={true}>
-          <div className="flex gap-2">
-            <div className="space-y-2 flex-grow">
+        <form noValidate={true} className="space-y-2">
+          <div className="relative sm:flex sm:gap-2">
+            <div className="space-y-12 sm:space-y-2 flex-grow">
               <div className={inputGroupClassNames}>
                 <DropdownButton name="currencyToSend" list={currencyList} />
                 <NumberInput
@@ -120,7 +102,11 @@ export default function CurrencyForm() {
                   placeholder="Amount to send"
                   onChange={(e) => {
                     const value = parseFloat(e.target.value);
-                    calculateAmountToReceive(value);
+                    if (value < 0) {
+                      setValue("amountToSend", 0);
+                    } else {
+                      calculateAmountToReceive(value);
+                    }
                   }}
                 />
               </div>
@@ -131,28 +117,44 @@ export default function CurrencyForm() {
                   placeholder="Amount to receive"
                   onChange={(e) => {
                     const value = parseFloat(e.target.value);
-                    calculateAmountToSend(value);
+                    if (value < 0) {
+                      setValue("amountToReceive", 0);
+                    } else {
+                      calculateAmountToSend(value);
+                    }
                   }}
                 />
               </div>
             </div>
             <button
               type="button"
-              className="basis-10 flex justify-center items-center"
+              className="absolute sm:static left-1/2 top-[94px] -translate-x-1/2 sm:translate-x-0 basis-10 flex justify-center items-center"
               onClick={handleSwap}
             >
               <img
                 src="/swap.svg"
-                className="size-10 border rounded-full p-2 rotate-90"
+                className="size-10 rounded-full p-2 rotate-90 bg-slate-300 transition-all bg-opacity-50 hover:bg-opacity-75"
                 alt="Swap currencies"
               />
             </button>
           </div>
-          <button type="submit" className="block">
-            Submit
-          </button>
         </form>
       </FormProvider>
+      {selectedCurrencyToReceive && selectedCurrencyToSend && (
+        <div className="font-bold mt-2">
+          <p>
+            <span>1</span> {selectedCurrencyToSend.currency} =
+          </p>
+          <p className="text-2xl ">
+            {`${
+              selectedCurrencyToSend.price / selectedCurrencyToReceive.price
+            } ${selectedCurrencyToReceive.currency}`}
+          </p>
+          <p className="font-normal ">
+            Updated on {getDate(selectedCurrencyToSend.date)}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
