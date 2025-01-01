@@ -165,6 +165,7 @@ function App() {
           </Text>
           <Paper radius="xl" p={{ base: 18, md: 26 }} bg="dark.9" w="100%">
             <TokenBox
+              hasError={!!errors?.sourceAmount}
               isValueLoading={isSourceValueLoading}
               isLoading={isLoading}
               isSelected={isSourceTokenSelected}
@@ -226,6 +227,7 @@ function App() {
               }
             />
             <TokenBox
+              hasError={!!errors?.destinationAmount}
               isValueLoading={isDestinationValueLoading}
               isLoading={isLoading}
               isSelected={isDestinationTokenSelected}
