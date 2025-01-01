@@ -53,10 +53,10 @@ const checkImageExists = async (url: string): Promise<boolean> => {
   }
 };
 
-let debounceTimeout: NodeJS.Timeout;
-
 function App() {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const [isSourceValueLoading, setIsSourceValueLoading] = useState(false);
   const [isDestinationValueLoading, setIsDestinationValueLoading] =
     useState(false);
@@ -115,6 +115,11 @@ function App() {
       }),
   });
 
+  const debounce = (callback: () => void) => {
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(callback, 700);
+  };
+
   const filteredTokens = useMemo(
     () =>
       searchQuery
@@ -151,6 +156,24 @@ function App() {
     return formatPrice(sum);
   }, [destinationToken, destinationAmount]);
 
+  const handleSourceTokenSum = (value: number) => {
+    const sum = (sourceToken.price * value) / destinationToken.price;
+    setIsDestinationValueLoading(true);
+    debounce(() => {
+      setFieldValue("destinationAmount", sum);
+      setIsDestinationValueLoading(false);
+    });
+  };
+
+  const handleDestinationTokenSum = (value: number) => {
+    const sum = (destinationToken.price * value) / sourceToken.price;
+    setIsSourceValueLoading(true);
+    debounce(() => {
+      setFieldValue("sourceAmount", sum);
+      setIsSourceValueLoading(false);
+    });
+  };
+
   return (
     <Container size="xl" pt={80} pb="xl">
       <Center>
@@ -184,15 +207,7 @@ function App() {
                   value: sourceAmount,
                   onChange: (value) => {
                     setFieldValue("sourceAmount", Number(value));
-                    const sum =
-                      (sourceToken.price * Number(value)) /
-                      destinationToken.price;
-                    setIsDestinationValueLoading(true);
-                    if (debounceTimeout) clearTimeout(debounceTimeout); // loading simulation
-                    debounceTimeout = setTimeout(() => {
-                      setFieldValue("destinationAmount", sum);
-                      setIsDestinationValueLoading(false);
-                    }, 1000);
+                    handleSourceTokenSum(Number(value));
                   },
                   onClick: () => setFieldValue("isSourceTokenSelected", true),
                   onBlur: () => setFieldValue("isSourceTokenSelected", false),
@@ -246,15 +261,7 @@ function App() {
                   value: destinationAmount,
                   onChange: (value) => {
                     setFieldValue("destinationAmount", Number(value));
-                    const sum =
-                      (destinationToken.price * Number(value)) /
-                      sourceToken.price;
-                    setIsSourceValueLoading(true);
-                    if (debounceTimeout) clearTimeout(debounceTimeout); // loading simulation
-                    debounceTimeout = setTimeout(() => {
-                      setFieldValue("sourceAmount", sum);
-                      setIsSourceValueLoading(false);
-                    }, 1000);
+                    handleDestinationTokenSum(Number(value));
                   },
                   onClick: () =>
                     setFieldValue("isDestinationTokenSelected", true),
@@ -341,9 +348,11 @@ function App() {
                   onClick={() => {
                     if (swapDirection === "source") {
                       setFieldValue("sourceToken", item);
+                      handleSourceTokenSum(Number(sourceAmount));
                     }
                     if (swapDirection === "destination") {
                       setFieldValue("destinationToken", item);
+                      handleDestinationTokenSum(Number(destinationAmount));
                     }
                     close();
                     setTimeout(() => {
