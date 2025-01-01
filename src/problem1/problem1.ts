@@ -26,18 +26,18 @@ function sum_to_n_z(n: number): number {
 console.log(sum_to_n_x(-1)) // 0
 console.log(sum_to_n_x(0)) // 0
 console.log(sum_to_n_x(5.99)) // 15
-console.log(sum_to_n_x(5)) // 55
+console.log(sum_to_n_x(5)) // 15
 // console.log(sum_to_n_x(Number.MAX_SAFE_INTEGER))
 
 // sum_to_n_b()
 console.log(sum_to_n_y(-1)) // 0
 console.log(sum_to_n_y(0)) // 0
 console.log(sum_to_n_y(5.99)) // 15
-console.log(sum_to_n_y(5)) // 55
+console.log(sum_to_n_y(5)) // 15
 console.log(sum_to_n_y(Number.MAX_SAFE_INTEGER)) // very fast, give the correct result - 4.0564819207303336e+31
 
 // sum_to_n_c()
 console.log(sum_to_n_z(-1)) // 0
 console.log(sum_to_n_z(0)) // 0
 console.log(sum_to_n_z(5.99)) // 15
-console.log(sum_to_n_z(5)) // 55
+console.log(sum_to_n_z(5)) // 15
