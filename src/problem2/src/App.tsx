@@ -35,7 +35,7 @@ interface IToken extends IPrice {
 
 interface IFormValue {
   searchQuery: string;
-  swapDirection: "from" | "to";
+  swapDirection: "source" | "destination";
   sourceToken: IToken;
   destinationToken: IToken;
   sourceAmount: number;
@@ -171,7 +171,7 @@ function App() {
               isSelected={isSourceTokenSelected}
               label="From"
               onTokenSelect={() => {
-                setFieldValue("swapDirection", "from");
+                setFieldValue("swapDirection", "source");
                 openModal();
               }}
               token={sourceToken}
@@ -233,7 +233,7 @@ function App() {
               isSelected={isDestinationTokenSelected}
               label="To"
               onTokenSelect={() => {
-                setFieldValue("swapDirection", "from");
+                setFieldValue("swapDirection", "destination");
                 openModal();
               }}
               token={destinationToken}
@@ -339,10 +339,10 @@ function App() {
               return (
                 <Flex
                   onClick={() => {
-                    if (swapDirection === "from") {
+                    if (swapDirection === "source") {
                       setFieldValue("sourceToken", item);
                     }
-                    if (swapDirection === "to") {
+                    if (swapDirection === "destination") {
                       setFieldValue("destinationToken", item);
                     }
                     close();
