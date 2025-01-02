@@ -42,6 +42,8 @@ interface IFormValue {
   destinationAmount: number;
   isSourceTokenSelected: boolean;
   isDestinationTokenSelected: boolean;
+  isSourceChosen: boolean;
+  isDestinationChosen: boolean;
 }
 
 const checkImageExists = async (url: string): Promise<boolean> => {
@@ -83,6 +85,8 @@ function App() {
     destinationAmount,
     isSourceTokenSelected,
     isDestinationTokenSelected,
+    isSourceChosen,
+    isDestinationChosen,
   } = values;
 
   const { data = [], isLoading } = useQuery({
@@ -156,37 +160,14 @@ function App() {
     return formatPrice(sum);
   }, [destinationToken, destinationAmount]);
 
-  const handleSourceTokenSum = (value: number) => {
-    const sum = (sourceToken.price * value) / destinationToken.price;
-    setIsDestinationValueLoading(true);
-    debounce(() => {
-      setFieldValue("destinationAmount", sum);
-      setIsDestinationValueLoading(false);
-    });
-  };
-
-  const handleDestinationTokenSum = (value: number) => {
-    const sum = (destinationToken.price * value) / sourceToken.price;
-    setIsSourceValueLoading(true);
-    debounce(() => {
-      setFieldValue("sourceAmount", sum);
-      setIsSourceValueLoading(false);
-    });
-  };
-
   return (
     <Container size="xl" pt={80} pb="xl">
       <Center>
-        <Stack
-          justify="center"
-          align="center"
-          gap="lg"
-          w={{ base: "100%", md: 500 }}
-        >
+        <Stack justify="center" align="center" gap="lg">
           <Text fw={600} fz="h2">
             Swap Assets
           </Text>
-          <Paper radius="xl" p={{ base: 18, md: 26 }} bg="dark.9" w="100%">
+          <Paper radius="xl" p={{ base: 18, md: 26 }} bg="dark.9" maw={500}>
             <TokenBox
               hasError={!!errors?.sourceAmount}
               isValueLoading={isSourceValueLoading}
@@ -207,9 +188,21 @@ function App() {
                   value: sourceAmount,
                   onChange: (value) => {
                     setFieldValue("sourceAmount", Number(value));
-                    handleSourceTokenSum(Number(value));
+                    const sum =
+                      (sourceToken.price * Number(value)) /
+                      destinationToken.price;
+                    setIsDestinationValueLoading(true);
+                    debounce(() => {
+                      setFieldValue("destinationAmount", sum);
+                      setIsDestinationValueLoading(false);
+                    });
                   },
-                  onClick: () => setFieldValue("isSourceTokenSelected", true),
+                  onClick: () => {
+                    setFieldValue("swapDirection", "source");
+                    setFieldValue("isSourceChosen", true);
+                    setFieldValue("isSourceTokenSelected", true);
+                    setFieldValue("isDestinationChosen", false);
+                  },
                   onBlur: () => setFieldValue("isSourceTokenSelected", false),
                 })}
               />
@@ -261,10 +254,21 @@ function App() {
                   value: destinationAmount,
                   onChange: (value) => {
                     setFieldValue("destinationAmount", Number(value));
-                    handleDestinationTokenSum(Number(value));
+                    const sum =
+                      (destinationToken.price * Number(value)) /
+                      sourceToken.price;
+                    setIsSourceValueLoading(true);
+                    debounce(() => {
+                      setFieldValue("sourceAmount", sum);
+                      setIsSourceValueLoading(false);
+                    });
                   },
-                  onClick: () =>
-                    setFieldValue("isDestinationTokenSelected", true),
+                  onClick: () => {
+                    setFieldValue("swapDirection", "destination");
+                    setFieldValue("isDestinationChosen", true);
+                    setFieldValue("isDestinationTokenSelected", true);
+                    setFieldValue("isSourceChosen", false);
+                  },
                   onBlur: () =>
                     setFieldValue("isDestinationTokenSelected", false),
                 })}
@@ -348,12 +352,44 @@ function App() {
                   onClick={() => {
                     if (swapDirection === "source") {
                       setFieldValue("sourceToken", item);
-                      handleSourceTokenSum(Number(sourceAmount));
-                    }
-                    if (swapDirection === "destination") {
+                      if (isSourceChosen) {
+                        const sum =
+                          (item.price * sourceAmount) / destinationToken.price;
+                        setIsDestinationValueLoading(true);
+                        debounce(() => {
+                          setFieldValue("destinationAmount", sum);
+                          setIsDestinationValueLoading(false);
+                        });
+                      } else if (isDestinationChosen) {
+                        const sum =
+                          (sourceToken.price * sourceAmount) / item.price;
+                        setIsSourceValueLoading(true);
+                        debounce(() => {
+                          setFieldValue("sourceAmount", sum);
+                          setIsSourceValueLoading(false);
+                        });
+                      }
+                    } else if (swapDirection === "destination") {
                       setFieldValue("destinationToken", item);
-                      handleDestinationTokenSum(Number(destinationAmount));
+                      if (isSourceChosen) {
+                        const sum =
+                          (sourceToken.price * sourceAmount) / item.price;
+                        setIsDestinationValueLoading(true);
+                        debounce(() => {
+                          setFieldValue("destinationAmount", sum);
+                          setIsDestinationValueLoading(false);
+                        });
+                      } else if (isDestinationChosen) {
+                        const sum =
+                          (item.price * destinationAmount) / sourceToken.price;
+                        setIsSourceValueLoading(true);
+                        debounce(() => {
+                          setFieldValue("sourceAmount", sum);
+                          setIsSourceValueLoading(false);
+                        });
+                      }
                     }
+
                     close();
                     setTimeout(() => {
                       setFieldValue("searchQuery", "");

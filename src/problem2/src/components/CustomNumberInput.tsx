@@ -5,16 +5,20 @@ const CustomNumberInput = ({ ...props }: NumberInputProps) => {
     <NumberInput
       {...props}
       thousandSeparator=","
-      styles={{
+      styles={(theme) => ({
         input: {
-          textAlign: "right",
           fontWeight: 800,
           border: "none",
           fontSize: 24,
           background: "none",
+          padding: 0,
+          outline: "none",
+          color: theme.colors.dark[0],
+          textAlign: "end",
+          width: "100%",
         },
-      }}
-      ta="right"
+      })}
+      ta="end"
       rightSection={<></>}
       placeholder="0.00"
     />

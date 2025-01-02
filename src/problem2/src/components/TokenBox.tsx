@@ -4,11 +4,9 @@ import {
   Flex,
   Image,
   Loader,
-  NumberFormatter,
   Paper,
   Skeleton,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { ReactNode } from "react";
@@ -42,9 +40,6 @@ const TokenBox = ({
   isValueLoading,
   ...props
 }: IProps) => {
-  const {
-    colors: { dark },
-  } = useMantineTheme();
   return (
     <Box {...props}>
       <Text fw={600} fz="xs" c="dark.2" mb="xs">
@@ -52,8 +47,7 @@ const TokenBox = ({
       </Text>
       <Paper
         bg="dark.7"
-        pl="sm"
-        py="sm"
+        p="sm"
         display="flex"
         radius="lg"
         sx={(theme) => ({
@@ -66,37 +60,39 @@ const TokenBox = ({
             : "none",
         })}
       >
-        <Skeleton visible={isLoading} w={160}>
-          <Paper
-            miw="max-content"
-            radius="lg"
-            onClick={onTokenSelect}
-            px={12}
-            py={8}
-            sx={(theme) => ({
-              cursor: "pointer",
-              display: "flex",
-              gap: "12px",
-              alignItems: "center",
-              ":hover": {
-                backgroundColor: theme.colors.dark[8],
-              },
-            })}
-          >
-            {token?.image ? (
-              <Image src={token?.image} width={45} height={45} />
-            ) : (
-              <PlaceholderTokenImage size={45} />
-            )}
-            <Flex align="center" gap={6}>
-              <Text fw={700} fz="lg">
-                {token?.currency}
-              </Text>
-              <IconChevronDown size={18} stroke={3} />
-            </Flex>
-          </Paper>
-        </Skeleton>
-        <div>
+        <Box>
+          <Skeleton visible={isLoading}>
+            <Paper
+              w="max-content"
+              radius="lg"
+              onClick={onTokenSelect}
+              px={12}
+              py={8}
+              sx={(theme) => ({
+                cursor: "pointer",
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                ":hover": {
+                  backgroundColor: theme.colors.dark[8],
+                },
+              })}
+            >
+              {token?.image ? (
+                <Image src={token?.image} width={45} height={45} />
+              ) : (
+                <PlaceholderTokenImage size={45} />
+              )}
+              <Flex align="center" gap={6}>
+                <Text fw={700} fz="lg">
+                  {token?.currency}
+                </Text>
+                <IconChevronDown size={18} stroke={3} />
+              </Flex>
+            </Paper>
+          </Skeleton>
+        </Box>
+        <Box>
           {children}
           {isValueLoading ? (
             <Flex justify="end" pr={24}>
@@ -105,25 +101,20 @@ const TokenBox = ({
           ) : (
             <>
               {!!estimatedValue && (
-                <NumberFormatter
-                  value={estimatedValue}
-                  thousandSeparator
-                  prefix="⁓"
-                  suffix=" USD"
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    fontSize: 14,
-                    paddingRight: 24,
-                    marginTop: -4,
-                    color: dark[2],
-                    fontWeight: 600,
-                  }}
-                />
+                <Text
+                  truncate="end"
+                  c="dark.2"
+                  fw={600}
+                  mt={-2}
+                  ta="right"
+                  fz="sm"
+                >
+                  ⁓{estimatedValue} USD
+                </Text>
               )}
             </>
           )}
-        </div>
+        </Box>
       </Paper>
     </Box>
   );
