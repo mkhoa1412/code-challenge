@@ -22,3 +22,7 @@ var sum_to_n_c = function (n) {
 
   return n + sum_to_n_c(n - 1);
 };
+
+console.log("sum_to_n_a: ", sum_to_n_a(100));
+console.log("sum_to_n_b: ", sum_to_n_b(100));
+console.log("sum_to_n_c: ", sum_to_n_c(100));
