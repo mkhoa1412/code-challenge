@@ -1,0 +1,36 @@
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Expose API service port
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: problem5
+      DB_USERNAME: localhost
+      DB_PASSWORD: localhost
+      JWT_SECRET: example-secret
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: localhost
+      POSTGRES_PASSWORD: localhost
+      POSTGRES_DB: problem5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
