@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { color, themeSettings } from '../styles';
 import { useCustomizedThemeContext } from '../providers/themeProvider';
+import { formatDecimalWithCommas } from '../utils';
 
 const specialTokenName: { [key: string]: string } = {
   STEVMOS: 'stEVMOS',
@@ -50,7 +51,7 @@ const CurrencySwapForm = () => {
 
   const watchedFromToken = watch('fromToken');
   const watchedToToken = watch('toToken');
-  const watchedFromAmount = watch('amount');
+  const watchedFromAmount = watch('amount').replace(/,/g, '');
   const currentFromToken = tokens.find((token) => token.currency === watchedFromToken);
   const currentToToken = tokens.find((token) => token.currency === watchedToToken);
   const toAmount = ((currentFromToken?.price ?? 0) * Number(watchedFromAmount)) / (currentToToken?.price ?? 1);
@@ -220,7 +221,7 @@ const CurrencySwapForm = () => {
                     <p>{token.currency}</p>
                   </div>
                   <div className='currencySwapForm-tokens--item__right'>
-                    <p>${token.price}</p>
+                    <p>${formatDecimalWithCommas(String(token.price))}</p>
                   </div>
                 </TokenItem>
               ))}
@@ -259,13 +260,18 @@ const CurrencySwapForm = () => {
                     <Controller
                       name='amount'
                       control={control}
-                      render={({ field }) => (
+                      render={({ field: { onChange, value, ...rest } }) => (
                         <InputField
-                          {...field}
+                          {...rest}
                           $placeholderPosition='right'
                           placeholder='0.00'
                           type='text'
                           autoComplete='off'
+                          value={value}
+                          onChange={(e) => {
+                            const formattedValue = formatDecimalWithCommas(e.target.value);
+                            onChange(formattedValue);
+                          }}
                         />
                       )}
                     />
@@ -312,7 +318,7 @@ const CurrencySwapForm = () => {
                     <InputField
                       $placeholderPosition='right'
                       disabled
-                      value={toAmount === 0 ? '' : toAmount}
+                      value={toAmount === 0 ? '' : formatDecimalWithCommas(String(toAmount))}
                       type='text'
                     />
                   </Header>
