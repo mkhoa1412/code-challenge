@@ -221,7 +221,7 @@ const CurrencySwapForm = () => {
                     <p>{token.currency}</p>
                   </div>
                   <div className='currencySwapForm-tokens--item__right'>
-                    <p>${formatDecimalWithCommas(String(token.price))}</p>
+                    <p>${formatDecimalWithCommas(String(token.price.toFixed(3)))}</p>
                   </div>
                 </TokenItem>
               ))}
@@ -277,7 +277,7 @@ const CurrencySwapForm = () => {
                     />
                   </Header>
                   <BalanceInfo>
-                    <span>${currentFromToken?.price}</span>
+                    <span>${currentFromToken?.price.toFixed(3)}</span>
                   </BalanceInfo>
                 </Content>
               </Card>
@@ -323,7 +323,7 @@ const CurrencySwapForm = () => {
                     />
                   </Header>
                   <BalanceInfo>
-                    <span>${currentToToken?.price}</span>
+                    <span>${currentToToken?.price.toFixed(3)}</span>
                   </BalanceInfo>
                 </Content>
               </Card>
