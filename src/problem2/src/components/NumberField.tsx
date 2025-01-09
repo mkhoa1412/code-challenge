@@ -33,7 +33,7 @@ export const NumberField = <T extends FieldValues>({
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Input
-              className="w-full rounded-xl px-4 py-6 placeholder:text-xl md:text-2xl"
+              className="w-full rounded-xl border-gray-600 px-4 py-6 placeholder:text-xl md:text-2xl"
               placeholder={placeholder}
               {...inputProps}
               {...field}

@@ -68,7 +68,7 @@ export const CurrencySelect = <T extends FieldValues>({
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "flex min-w-[100px] items-center gap-2 rounded-xl px-4 py-6 text-xl",
+                    "flex min-w-[100px] items-center gap-2 rounded-xl border-0 bg-gray-200 px-4 py-6 text-xl hover:bg-gray-300",
                     !field.value && "text-muted-foreground",
                   )}
                   disabled={disabled}

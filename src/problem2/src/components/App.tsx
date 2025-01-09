@@ -1,4 +1,4 @@
-import { Converter } from "@components";
+import { Converter } from "@components/Converter";
 
 const App = () => {
   return (
