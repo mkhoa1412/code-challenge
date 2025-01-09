@@ -74,10 +74,11 @@ export const CurrencySelect = <T extends FieldValues>({
                   disabled={disabled}
                 >
                   <img
-                    src={`/token-icons/${field.value}.svg`}
+                    src={`https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${field.value}.svg`}
                     alt={field.value}
                     className="h-6 w-6 rounded-full"
                   />
+
                   {currencies.find((item) => item.currency === field.value)
                     ?.currency ?? defaultValue}
                   <ChevronDown className="opacity-50" />
@@ -104,7 +105,7 @@ export const CurrencySelect = <T extends FieldValues>({
                         className="flex items-center gap-2.5 text-lg"
                       >
                         <img
-                          src={`/token-icons/${item.currency}.svg`}
+                          src={`https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${item.currency}.svg`}
                           alt={field.value}
                           className="h-5 w-5 rounded-full"
                         />
