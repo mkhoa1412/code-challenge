@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sum to n Calculator</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+      }
+      td {
+        text-align: left;
+      }
+      th,
+      .result-cell {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sum to n Calculator</h1>
+    <input id="numberInput" type="number" placeholder="Enter a positive integer" />
+    <button onclick="calculateAndDisplay()">Calculate</button>
+
+    <h2>Results:</h2>
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>Calculation Method</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script type="module">
+      import { sum_to_n_a, sum_to_n_b, sum_to_n_c } from "./solution.js";
+
+      const methods = [sum_to_n_a, sum_to_n_b, sum_to_n_c];
+
+      const resultTableBody = document.querySelector("#resultTable tbody");
+
+      // Init result table
+      methods.forEach((method) => {
+        const row = document.createElement("tr");
+        const methodCode = method.toString();
+        row.innerHTML = `<td><pre><code>${methodCode}</code></pre></td><td class="result-cell">--</td>`;
+        resultTableBody.appendChild(row);
+      });
+
+      function clearResult() {
+        methods.forEach((_, index) => {
+          const resultCell = resultTableBody.rows[index].cells[1];
+          resultCell.textContent = "--";
+        });
+      }
+
+      function isValid(num) {
+        if (!Number.isInteger(num) || num < 1) return false;
+        return true;
+      }
+
+      function calculateAndDisplay() {
+        // Get input value and validate
+        const inputEl = document.getElementById("numberInput");
+        const inputVal = inputEl.value.trim();
+        const n = Number(inputVal);
+        if (!isValid(n)) {
+          alert("Please enter a valid positive integer");
+          inputEl.value = "";
+          clearResult();
+          return;
+        }
+
+        // Calculate and display the result
+        methods.forEach((method, index) => {
+          const resultCell = resultTableBody.rows[index].cells[1];
+          resultCell.textContent = method(n);
+        });
+      }
+
+      window.calculateAndDisplay = calculateAndDisplay;
+    </script>
+  </body>
+</html>
