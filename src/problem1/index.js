@@ -15,28 +15,28 @@ Assumptions:
 
 // Implementation 1
 // Using the formula for the sum of the first n natural numbers
-var sum_to_n_a = function(n) {
+var sum_to_n_a = function (n) {
   if (n <= 0) return 0; // if n is less than or equal to 0, return 0
   n = Math.floor(n); // if n is float will convert to integer
-  return (n * (n + 1)) / 2;  
+  return (n * (n + 1)) / 2;
 }
 
 // Implementation 2
 // Using Iterative Approach
- var sum_to_n_b = function(n) {
-    if (n <= 0) return 0; // if n is less than or equal to 0, return 0
-    n = Math.floor(n); // if n is float will convert to integer
-    let sum = 0;
-    for (let i = 1; i <= n; i++) {
-      sum += i;
-    }
-    return sum;
+var sum_to_n_b = function (n) {
+  if (n <= 0) return 0; // if n is less than or equal to 0, return 0
+  n = Math.floor(n); // if n is float will convert to integer
+  let sum = 0;
+  for (let i = 1; i <= n; i++) {
+    sum += i;
+  }
+  return sum;
 }
 
 
 // Implementation 3
 // Using a loop
-var sum_to_n_c = function(n) {
+var sum_to_n_c = function (n) {
   if (n <= 0) return 0; // if n is less than or equal to 0, return 0
   n = Math.floor(n); // if n is float will convert to integer
   let sum = 0;
