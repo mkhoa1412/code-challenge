@@ -8,7 +8,6 @@ export const useCryptoCurrencies = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    //mock promise to simulate api call with delay
     const fetchData = async () => {
       setLoading(true);
       try {

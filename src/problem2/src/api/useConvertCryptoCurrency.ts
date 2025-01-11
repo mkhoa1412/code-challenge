@@ -13,7 +13,6 @@ export const useConvertCryptoCurrency = () => {
 
     setLoading(true);
     try {
-      //mock 2 seconds delay
       await new Promise((resolve) =>
         setTimeout(() => {
           console.log("Data sent", { amount, fromCurrency, toCurrency });

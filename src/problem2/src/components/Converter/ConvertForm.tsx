@@ -10,31 +10,24 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
-import { ICurrency } from "@/types/Currency";
-
+import { useConvertCryptoCurrency } from "@/api/useConvertCryptoCurrency";
+import { useCryptoCurrencies } from "@/api/useCryptoCurrencies";
 interface IProps {
-  currenciesData: {
-    currencies: ICurrency[];
-    loadingCurrencies: boolean;
-  };
-  convertData: {
-    convertCryptoCurrency: (data: {
-      amount: number;
-      fromCurrency: string;
-      toCurrency: string;
-    }) => Promise<void>;
-    loadingConvert: boolean;
-  };
   setIsCompleted: (value: boolean) => void;
 }
 
-export const ConvertForm = ({
-  currenciesData,
-  convertData,
-  setIsCompleted,
-}: IProps) => {
-  const { currencies, loadingCurrencies } = currenciesData;
-  const { convertCryptoCurrency, loadingConvert } = convertData;
+export const ConvertForm = ({ setIsCompleted }: IProps) => {
+  const {
+    currencies,
+    loading: loadingCurrencies,
+    error: errorCurrencies,
+  } = useCryptoCurrencies();
+
+  const {
+    convertCryptoCurrency,
+    loading: loadingConvert,
+    error: errorConvert,
+  } = useConvertCryptoCurrency();
 
   const form = useForm<z.infer<typeof ConvertFormSchema>>({
     resolver: zodResolver(ConvertFormSchema),
@@ -47,48 +40,51 @@ export const ConvertForm = ({
   });
   const { control, setValue, watch } = form;
 
-  const watchFrom = watch("from");
-  const watchTo = watch("to");
-  const watchCurrencyFrom = watch("currencyFrom");
-  const watchCurrencyTo = watch("currencyTo");
+  const {
+    from: watchFrom,
+    to: watchTo,
+    currencyFrom: watchCurrencyFrom,
+    currencyTo: watchCurrencyTo,
+  } = watch();
 
   const [activeField, setActiveField] = useState<"from" | "to" | null>(null);
 
-  //Convert FROM -> TO
+  //Convert the currency when the active field changes
+  // FROM -> TO or TO -> FROM
   useEffect(() => {
-    if (activeField !== "from") return;
+    if (!activeField) return;
 
-    //set value to 0 if not a valid number
-    const fromNum = parseFloat(watchFrom);
-    if (isNaN(fromNum)) return setValue("to", "0");
+    const isFromActive = activeField === "from";
+    const sourceValue = isFromActive ? watchFrom : watchTo;
+    const sourceCurrency = isFromActive ? watchCurrencyFrom : watchCurrencyTo;
+    const targetField = isFromActive ? "to" : "from";
+    const targetCurrency = isFromActive ? watchCurrencyTo : watchCurrencyFrom;
+
+    const parsedValue = parseFloat(sourceValue);
+
+    //Set the value to 0 if it's not a valid number
+    if (isNaN(parsedValue)) {
+      setValue(targetField, "0");
+      return;
+    }
 
     const convertedValue = convertCurrencyPrice({
       currencies,
-      amount: fromNum,
-      fromCurrency: watchCurrencyFrom,
-      toCurrency: watchCurrencyTo,
+      amount: parsedValue,
+      fromCurrency: sourceCurrency,
+      toCurrency: targetCurrency,
     });
 
-    setValue("to", `${convertedValue}`);
-  }, [watchFrom, watchCurrencyFrom, watchCurrencyTo, activeField]);
-
-  //Convert TO -> FROM
-  useEffect(() => {
-    if (activeField !== "to") return;
-
-    //set value to 0 if not a valid number
-    const toNum = parseFloat(watchTo);
-    if (isNaN(toNum)) return setValue("from", "0");
-
-    const convertedValue = convertCurrencyPrice({
-      currencies,
-      amount: toNum,
-      fromCurrency: watchCurrencyTo,
-      toCurrency: watchCurrencyFrom,
-    });
-
-    setValue("from", `${convertedValue}`);
-  }, [watchTo, watchCurrencyFrom, watchCurrencyTo, activeField]);
+    setValue(targetField, String(convertedValue));
+  }, [
+    activeField,
+    watchFrom,
+    watchTo,
+    watchCurrencyFrom,
+    watchCurrencyTo,
+    currencies,
+    setValue,
+  ]);
 
   const handleSwap = () => {
     // Swap the values
@@ -121,6 +117,14 @@ export const ConvertForm = ({
       }
     }
   };
+
+  if (errorCurrencies || errorConvert) {
+    return (
+      <div className="text-sm text-red-500">
+        {errorCurrencies || errorConvert}
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>

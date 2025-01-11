@@ -37,7 +37,10 @@ export const NumberField = <T extends FieldValues>({
               placeholder={placeholder}
               {...inputProps}
               {...field}
-              value={field.value || "0"}
+              value={
+                // If the value is empty, set it to "0"
+                field.value || "0"
+              }
               onChange={(e) => {
                 let value = e.target.value;
                 const numberRegex = /^[0-9]*\.?[0-9]*$/;
