@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Button, Form, Input, Select, Space } from 'antd';
 import './SwapForm.css';
 
+
+const { Option } = Select;
+const layout = {
+    labelCol: {
+        span: 8,
+    },
+    wrapperCol: {
+        span: 16,
+    },
+};
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16,
+    }
+}
+
 const SwapForm = () => {
+    const [form] = Form.useForm();
     const [tokens, setTokens] = useState([]);
     const [prices, setPrices] = useState({});
     const [fromCurrency, setFromCurrency] = useState('');
@@ -23,6 +42,14 @@ const SwapForm = () => {
         };
         fetchTokens();
     }, []);
+
+    const onFromCurrencyChanged= (value) => {
+        setFromCurrency(value);
+    };
+
+    const handleSwapping = (values) => {
+
+    }
 
     const handleSwap = () => {
         if (!fromCurrency || !toCurrency || !amount) {
