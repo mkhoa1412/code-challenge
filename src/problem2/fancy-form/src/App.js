@@ -1,6 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-import SwapForm from "./SwapForm";
 import CurrencySwapForm from "./CurrencySwapForm";
 
 function App() {

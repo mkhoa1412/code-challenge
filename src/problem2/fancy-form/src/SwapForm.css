@@ -1,4 +1,4 @@
-.swap-form {
+.currency-swap-form-wrapper {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -6,29 +6,6 @@
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.swap-form h1 {
-    text-align: center;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-}
-
-.form-group select,
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
 .button {
@@ -47,9 +24,4 @@
 
 .error {
     color: red;
-}
-
-.result {
-    margin-top: 20px;
-    color: #333;
 }

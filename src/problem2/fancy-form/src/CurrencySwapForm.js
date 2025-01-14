@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {Button, Card, Form, Input, Select, Space} from 'antd';
-import './SwapForm.css';
-
 
 const { Option } = Select;
 const layout = {
