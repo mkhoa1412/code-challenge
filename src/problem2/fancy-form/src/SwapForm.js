@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './CurrencySwapForm.css';
+import './SwapForm.css';
 
-const CurrencySwapForm = () => {
+const SwapForm = () => {
     const [tokens, setTokens] = useState([]);
     const [prices, setPrices] = useState({});
     const [fromCurrency, setFromCurrency] = useState('');
@@ -48,7 +48,7 @@ const CurrencySwapForm = () => {
     };
 
     return (
-        <div className="currency-swap-form">
+        <div className="swap-form">
             <h1>Currency Swap</h1>
             <div className="form-group">
                 <label>From:</label>
@@ -87,4 +87,4 @@ const CurrencySwapForm = () => {
     );
 };
 
-export default CurrencySwapForm;
+export default SwapForm;
