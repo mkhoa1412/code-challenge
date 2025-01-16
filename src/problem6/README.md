@@ -1,8 +1,12 @@
+## Problem 6:
+
+***
+
 ## 1. Requirements
 
 ### 1 Functional Requirement
 
-- Play any game and gain rating if won (suppose a game is a matrix puzzle, and we want to move from **top left to bottom right**)
+- Play game and gain rating if won (suppose a game is a matrix puzzle, and we want to move from **top left to bottom right**, each time the user won they gain +25 else -25).
 - View top 10 players with the highest rating
 - Live update the leaderboard
 
@@ -26,14 +30,13 @@
 ![schema](./assets/schema.png)
 
 - **Player** (id, username, email, rating, userStatus):
-  - id (primary key): of the player.
-  - username (unique).
+  - id (primary key).
   - email (unique).
   - rating (float): current rating of the user.
   - status (enum) - PLAYING | IDLE: is the player is idling or playing the game.
 - **Game** (id, userId, gameStatus, won, createdAt):
-  - id (primary key) of the player.
-  - userId (foreign key): who is playing this game.
+  - id (primary key).
+  - userId (foreign key).
   - gameStatus (enum) - PLAYING | OVER: determines if the game is still playing or over.
   - won (boolean): if the user had won or lose
 - **Move** (id, userId, gameId, row, column, createdAt):
@@ -129,43 +132,48 @@ GET /leaderboard?location={location}&limit={limit}&page={page}  -> User[]
 
 ## 5. Deep Dive
 
-### 1. Scaling Move
+### 1. Scaling your internal Services
 
-- At step making a move, especially when there are a lot of winning matches happened at the same time, we should decouple the reranking into individual service.
-- This would help decouple the Move and Reranking service to not put a lot of stress in Move service.
+- Move Service would be put through a huge spiked traffic if there are a lot of players playing at the same time.
+- And along with that we have to ensure if the player is won, reranking would happen -> causing a lot of stress to the service.
 
 ![Move](./assets/move.png)
 
 - The idea is decoupling them with a messaging queue.
-- When a request for reranking happened for a specific player, we could push it into the Queue.
-- The benefit is that this would keep the Reranking Service running at its own pace and send send the event for re-rendering the FE dashboard.
+- When a request for reranking happened for a specific player, we could push it into a Messaging Queue.
+- A Reranking Service would do a **long polling**, which is a mechanism allows the Service to waiting for a new event to be happened, reducing a lot of calling to the Queue -> reducing cost.
+- The benefit is that this would keep the Reranking Service running at its own pace and send the event for re-rendering the FE dashboard.
 
-### 2. Reduce the latency of WebSocket 
+### 2. Scaling Horizontally
+
+- Consider scaling the services horizontally with Auto Scaling Group + Load Balancer.
+  - Seamlessly handle failures.
+  - Handle large load of throughput.
+
+### 3. Reduce the latency of pushing event
 
 - In order for the Server to push the event with low latency, it needs the requirements:
   - The server has to be near the user's location.
-  - It's a good idea to put your database near the server. 
+  - It's a good idea to deploy your database near the server. 
 
-- The strategy is we would deploy our application into several core regions with the most played user's location.
-- Enable the multi-regions and read-replicas features of the database in multi regions (RDS, Aurora if AWS).
-  - Multi-regions: has a bare severs located at Availability Zone within the same region as the Primary Database, when the Primary Database failed, the replica will take over and handle as Primary Database (Sync replication).
+### 4. Scaling your Database
+
+- The strategy is we would deploy our application into several regions with the most played users.
+- Enable the multi-regions and read-replicas features (RDS and Aurora are fully managed this).
+  - Multi-regions has bare severs located at Availability Zone within the same region with the Primary Database, when the Primary Database failed, the replica will take over and handle as Primary Database (Sync replication).
   - Read replicas allows you to have up to 15 replicas that would be responsible for handling any read operations, reduce a ton of resources from the Primary Database (Async replication).
-- This ensures the fail-over and consistency of the data.
+- This ensures the fail-over for the system.
 
-### 3. Database
+### 5. Partitioning the Database
 
-- Consider enabling Partitioning your database into each segments since we had a lot of readings from Cron Job and Reranking Service. 
+- Cron Job and Reranking Service, they're both responsible for updating the leaderboard.
+- Consider enabling Partitioning your database into each segments since we had a lot of readings to rerank. 
   - Partitioning would help split a big set of data into each smaller segment, hence reduce overwhelmingly the searching.
 
 ## 6. Out of Scope
 
 ### Caching Frontend with CDN
 
-- I would argue that by using any CDN like CloudFlare or CloudFront on landing pages, it could help caching the static contents in order to serve the user immediately and prevent any malicious attacks such as DDoS.
-- But for any dynamic contents that would be updated regularly especially in this problem, caching CDN is a bad idea for any of those.
-
-
-
-## 7. Ending
-
-Thank you so much for reading all of this.
+- Using CDN like CloudFlare or CloudFront to cache the static contents.
+- Using CND with dyanmic content is still fine, if we set TTL to be really low (2 -> 5 seconds).
+- I would argue that, for any dynamic contents that would be updated regularly especially in this problem, caching CDN is a bad idea for any of those.
