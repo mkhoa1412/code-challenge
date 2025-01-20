@@ -1,8 +1,32 @@
-# React + Vite
+### Code Review
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#### 🟢 Good Practices
+- Clean component structure using React hooks
+- Proper loading state management
+- Responsive UI with Tailwind CSS
+- Basic form validation
+- API error handling
 
-Currently, two official plugins are available:
+#### 🔴 Issues to Address
+1. **Form Validation**
+- Current validation uses alerts
+- No input sanitization
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+2. **Error Handling**
+- Reliance on window.alert()
+- No user-friendly error display
+
+3. **Code Organization**
+- Duplicated select component code
+- Mixed concerns in handleSwap
+
+4. **Accessibility**
+- Missing aria labels
+- No form submission handling
+
+These changes:
+- Extract CurrencySelect into reusable component
+- Add proper form submission
+- Improve error handling with UI feedback
+- Enhance accessibility
+- Add proper type checking with props
