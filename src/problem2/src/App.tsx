@@ -21,15 +21,11 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
   }, []);
 
   return (
-    <Theme
-      accentColor="gray"
-      grayColor="gray"
-      scaling="100%"
-      radius="full"
-      panelBackground="translucent"
-    >
-      <Header />
-      <ExchangeForm />
+    <Theme accentColor="blue" grayColor="olive" scaling="100%" radius="full">
+      <div className="min-h-screen bg-linear-to-r from-blue-100 to-white from-10% flex flex-col pt-3 md:pt-[20px]">
+        <Header />
+        <ExchangeForm />{" "}
+      </div>
     </Theme>
   );
 };

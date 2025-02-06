@@ -7,6 +7,7 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { cn } from "@utils/helpers";
+import Fuse from "fuse.js";
 import * as React from "react";
 import useGetCryptoData from "src/api/data/useGetCryptoData";
 import "../styles/CryptoSelectModal.css";
@@ -15,7 +16,7 @@ import { CRYPTO_LIST } from "../utils";
 
 interface ICryptoSelectModalProps {
   onSelectValue?: (value: ICrypto) => void;
-  defaultValue?: ICrypto;
+  defaultValue?: ICrypto | null;
 }
 
 const CryptoSelectModal: React.FunctionComponent<ICryptoSelectModalProps> = ({
@@ -25,9 +26,32 @@ const CryptoSelectModal: React.FunctionComponent<ICryptoSelectModalProps> = ({
   const { data, isLoading } = useGetCryptoData();
 
   const [open, setOpen] = React.useState<boolean>(false);
+  const [searchText, setSearchText] = React.useState("");
   const [valueSelected, setValueSelected] = React.useState<ICrypto | null>(
     null
   );
+
+  const handleChange = (e) => {
+    setSearchText(e?.target?.value);
+  };
+
+  const onItemClick = (item: ICrypto) => {
+    onSelectValue && onSelectValue(item);
+    setValueSelected(item);
+    setOpen(false);
+  };
+
+  const results = React.useMemo(() => {
+    const fuse = new Fuse(data || [], {
+      useExtendedSearch: true,
+      keys: ["currency"],
+    });
+    return searchText === ""
+      ? data
+      : fuse?.search(searchText)?.map((item) => item?.item);
+  }, [data, searchText]);
+
+  console.log("results", results);
 
   React.useEffect(() => {
     const cryptoConfig = CRYPTO_LIST.find(
@@ -37,12 +61,6 @@ const CryptoSelectModal: React.FunctionComponent<ICryptoSelectModalProps> = ({
       defaultValue ? { ...defaultValue, icon: cryptoConfig?.icon } : null
     );
   }, [defaultValue]);
-
-  const onItemClick = (item: ICrypto) => {
-    onSelectValue && onSelectValue(item);
-    setValueSelected(item);
-    setOpen(false);
-  };
 
   return (
     <Dialog.Root
@@ -83,36 +101,48 @@ const CryptoSelectModal: React.FunctionComponent<ICryptoSelectModalProps> = ({
 
         <Dialog.Description
           size="2"
-          className="flex flex-col gap-4 h-[calc(100%-64px)] w-full"
+          className="flex flex-col gap-4 h-[calc(100%-48px)] w-full"
         >
-          <TextField.Root size="3" placeholder="Search crypto by name or ID" />
+          <TextField.Root
+            size="3"
+            placeholder="Search crypto by name or ID"
+            onChange={handleChange}
+          />
           <div className="h-full overflow-auto flex flex-col gap-4 md:pr-1">
-            {data?.map((elm, idx) => {
-              const cryptoConfig = CRYPTO_LIST.find(
-                (elmx) => elmx.currency === elm.currency
-              );
-              return (
-                <div
-                  key={idx}
-                  className={cn(
-                    "cursor-pointer flex items-center justify-between rounded-md gap-1 h-[56px] p-4 border !border-gray-100 item"
-                  )}
-                  onClick={() =>
-                    onItemClick({ ...elm, icon: cryptoConfig?.icon })
-                  }
-                >
-                  <div className="flex gap-1 items-center">
-                    <span className="w-[24px] h-[24px]">
-                      {cryptoConfig?.icon}
-                    </span>
-                    <span className="text-gray-400 !font-bold">
-                      {elm.currency}
-                    </span>
-                  </div>
-                  <span className="text-gray-500 !font-bold">${elm.price}</span>
-                </div>
-              );
-            })}
+            {!results?.length ? (
+              <div className="w-full pl-2">Not Found Any Token</div>
+            ) : (
+              <>
+                {results?.map((elm, idx) => {
+                  const cryptoConfig = CRYPTO_LIST.find(
+                    (elmx) => elmx.currency === elm.currency
+                  );
+                  return (
+                    <div
+                      key={idx}
+                      className={cn(
+                        "cursor-pointer flex items-center justify-between rounded-md gap-1 h-[56px] p-4 border !border-gray-100 item"
+                      )}
+                      onClick={() =>
+                        onItemClick({ ...elm, icon: cryptoConfig?.icon })
+                      }
+                    >
+                      <div className="flex gap-1 items-center">
+                        <span className="w-[24px] h-[24px]">
+                          {cryptoConfig?.icon}
+                        </span>
+                        <span className="text-gray-400 !font-bold">
+                          {elm.currency}
+                        </span>
+                      </div>
+                      <span className="text-gray-500 !font-bold text-xs">
+                        ${elm.price}
+                      </span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
         </Dialog.Description>
       </Dialog.Content>

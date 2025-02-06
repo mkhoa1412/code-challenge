@@ -11,7 +11,7 @@ const DropdownMenuBar: React.FunctionComponent<IDropdownMenuBarProps> = (
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <IconButton variant="soft" className="!cursor-pointer">
+        <IconButton variant="soft" color="indigo" className="!cursor-pointer">
           <DotsHorizontalIcon width="18" height="18" />
         </IconButton>
       </DropdownMenu.Trigger>

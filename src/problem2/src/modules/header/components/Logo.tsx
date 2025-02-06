@@ -17,7 +17,7 @@ const Logo: React.FunctionComponent<ILogoProps> = ({ hasTitle = true }) => {
         }}
       >
         <Avatar size="1" src={logoImage} fallback="A" />
-        {hasTitle && <span className="font-bold">DEMEX</span>}
+        {hasTitle && <span className="font-bold text-blue-600">DEMEX</span>}
       </Button>
     </div>
   );
