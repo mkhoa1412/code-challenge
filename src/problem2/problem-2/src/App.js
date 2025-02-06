@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -30,16 +30,17 @@ const CurrencyExchangeForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const [exchangeRate, setExchangeRate] = useState(1);
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("VND");
-  const [currencies, setCurrencies] = useState([]);
+  const [rates, setRates] = useState({});
+
+  const currencies = useMemo(() => rates ? Object.keys(rates): [], [rates]);
 
   const handleAmountChange = (amount) => {
     if (isNaN(amount)) {
       return setValue("amountToReceive", 0);
     }
-    setValue("amountToReceive", amount * exchangeRate);
+    setValue("amountToReceive", amount * rates[toCurrency]);
   };
 
   const onSubmit = (data) => {
@@ -53,8 +54,7 @@ const CurrencyExchangeForm = () => {
       .get(`${API_URL}/${fromCurrency}`)
       .then((response) => {
         const rates = response.data.rates;
-        setExchangeRate(rates[toCurrency]);
-        setCurrencies(Object.keys(rates));
+        setRates(rates);
       })
       .catch((error) => {
         console.error("Error fetching exchange rates:", error);
