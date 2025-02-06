@@ -1,0 +1,16 @@
+:root {
+  display: flex;
+  background-color: #000c50;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 16px;
+
+  --primary-color: #219BE4;
+  --border-color: #ccc;
+  --background-color-hover:#f3f3f3;
+  --background-color-modal:#00000080;
+
+}
+
+
