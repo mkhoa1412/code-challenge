@@ -1,0 +1,17 @@
+.wrapper {
+  .btnCurrency {
+    font-size: 1em;
+    &:hover {
+      background-color: unset;
+    }
+  }
+}
+.wrapperList {
+  padding: 15px;
+  max-width: 350px;
+}
+.listCurrency {
+  & ul > li > div {
+    padding: 0;
+  }
+}
