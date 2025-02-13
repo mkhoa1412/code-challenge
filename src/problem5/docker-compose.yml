@@ -1,0 +1,17 @@
+version: "3"
+services:
+  db_pg:
+    container_name: tt_pg
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=tt_pg
+      - POSTGRES_PASSWORD=t99dev#241
+      - POSTGRES_DB=tt_pg
+      - PGDATA=/home/postgres/pgdata
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/home/postgres/pgdata
+    
+volumes:
+  pgdata:
