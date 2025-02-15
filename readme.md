@@ -1,10 +1,24 @@
-# 99Tech Code Challenge #1 #
+# Fresher Backend Developer
 
-Note that if you fork this repository, your responses may be publicly linked to this repo.  
-Please submit your application along with the solutions attached or linked.   
+# Start Project
+``
+git clone https://github.com/lehau17/BE-code-challenge-Le-Trung-Hau.git
+cd be-code-challenge
+npm i
+``
 
-It is important that you minimally attempt the problems, even if you do not arrive at a working solution.
+# Problem 4
+`` 
+    npm run problem-4
+``
 
-## Submission ##
-You can either provide a link to an online repository, attach the solution in your application, or whichever method you prefer.
-We're cool as long as we can view your solution without any pain.
+
+# Problem 5
+`` 
+    npm run problem-5
+``
+
+# Problem 6 : readme.md
+``
+cd src/problem6 
+``
