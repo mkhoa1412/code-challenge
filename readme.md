@@ -21,4 +21,4 @@ npm i
 # Problem 6 : readme.md
 ``
 cd src/problem6 
-``
+``go
