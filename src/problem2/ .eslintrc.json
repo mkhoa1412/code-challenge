@@ -13,6 +13,7 @@
       "plugin:react-hooks/recommended"
     ],
     "rules": {
+      "max-warnings": 10,
       "no-var": "error",
       "semi": [2, "always"],
       "quotes": [2, "double"],
