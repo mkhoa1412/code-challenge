@@ -8,7 +8,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": []
+		"ignore": ["./src/problem3/original.tsx"]
 	},
 	"formatter": {
 		"enabled": true,
