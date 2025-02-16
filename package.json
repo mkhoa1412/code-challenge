@@ -1,0 +1,14 @@
+{
+	"name": "99tech",
+	"scripts": {
+		"start:problem1": "npm start --workspace=problem1",
+		"start:problem2": "npm run dev --workspace=problem2",
+		"lint": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true .",
+		"prepare": "lefthook install"
+	},
+	"workspaces": ["./src/problem1", "./src/problem2", "./src/problem3"],
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"lefthook": "^1.10.10"
+	}
+}
