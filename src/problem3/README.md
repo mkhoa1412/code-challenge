@@ -1,8 +1,24 @@
-# React + Vite
+# The code has some inefficiencies and anti-patterns. Here’s a breakdown:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Issues:
 
-Currently, two official plugins are available:
+1. Inefficient Filtering & Sorting in useMemo:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- The function first filters the balances and then sorts them. This causes unnecessary operations on the array.
+- Sorting could be optimized to avoid redundant calls to getPriority.
+
+2. getPriority Should Use a Map Instead of a Switch:
+
+- The function can be optimized by using a dictionary lookup instead of a switch statement.
+
+3. Avoid Excessive useMemo Usage:
+
+- If balances and prices don’t change frequently, using useMemo may add unnecessary complexity.
+
+## Improvements:
+
+- Replaced switch with a dictionary lookup for better performance and readability.
+- Combined filter & sort efficiently to minimize unnecessary operations.
+- Removed redundant dependencies in useMemo for better optimization.
+
+This should enhance performance and maintainability.
