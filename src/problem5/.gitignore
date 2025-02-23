@@ -1,0 +1,15 @@
+node_modules/
+build/
+.vscode/
+.env
+public/stylesheets
+public/storage
+public/js
+.DS_Store
+dist/
+logs/
+*.log
+storage/app/
+.idea/
+storage/public/*
+!storage/public/.gitkeep

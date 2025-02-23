@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "build/",
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+    },
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "lib": ["es6"],
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "node"
+    ],
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "build"],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "require": ["tsconfig-paths/register"],
+  },
+  "tsc-alias": {
+    "verbose": true,
+    "resolveFullPaths": true,
+    "fileExtensions": {
+      "inputGlob": "{js,jsx,mjs}",
+      "outputCheck": ["js", "json", "jsx", "mjs"]
+    }
+  },
+  "files": [
+    "src/types/global.d.ts"
+  ],
+}

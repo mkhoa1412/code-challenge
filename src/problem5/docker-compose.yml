@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: docker/node/Dockerfile
+    image: problem5_serviceapp
+    container_name: problem5_service-app
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/
+    ports:
+      - "$SERVE_PORT:$SERVE_PORT"
+    volumes:
+      - ./:/var/www
+    networks:
+      - problem5_service_network
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    container_name: problem5_service-postgres
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
+    networks:
+      - problem5_service_network
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  problem5_service_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
