@@ -1,8 +1,20 @@
 body {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  min-width: 360px;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.token {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+  &.selected {
+    background-color: cornflowerblue;
+  }
+}
+
+img {
+  width: 32px;
+  height: 32px;
 }
