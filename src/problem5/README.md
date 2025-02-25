@@ -11,11 +11,11 @@ A simple CRUD API for managing tasks, built with ExpressJS and TypeScript, using
 
 1. **Clone the Repository**:
    ```sh
-   git clone https://github.com/ngocyt001/code-challenge-99tech.git
+   git clone https://github.com/ngocyt001/thanh-ngoc-code-challenge-99tech.git
    ```
 2. **Navigate to the Project Directory**:
    ```sh
-   cd code-challenge-99tech
+   cd thanh-ngoc-code-challenge-99tech
    ```
 3. **Install Dependencies**:
    ```sh
