@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import axios from 'axios';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const formSchema = z.object({
   amountToSend: z.string().refine((v) => parseInt(v) > 0, {
     message: 'Amount to send must be greater than 0',
@@ -161,22 +162,21 @@ export default function Index() {
               name="token"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Token</FormLabel>
                   <FormControl>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a price" />
+                        <SelectValue placeholder="Select a token" />
                       </SelectTrigger>  
                       <SelectContent>
                         {tokens.map((price, index) => (
                           <SelectItem key={index} value={price.value.toString()}>
                             <div className="flex w-full items-center cursor-pointer">
-                              <img
-                                src={price.icon}
-                                alt={price.label}
-                                className="w-6 h-6 mr-2"
-                              />
-                              <div className="flex-1">{price.label} - {price.price}</div>
+                            <Avatar className="mr-2 w-6 h-6">
+                              <AvatarImage src={price.icon} alt={price.label} />
+                              <AvatarFallback>{price.label.substring(0, 2)}</AvatarFallback>
+                            </Avatar>
+                              <div className="flex-1">{price.label} - ${price.price}</div>
                             </div>
                           </SelectItem>
                         ))}
@@ -184,7 +184,7 @@ export default function Index() {
                     </Select>
                   </FormControl>
                   <FormDescription>
-                    This is the price you will receive.
+                    This is the token you will receive.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
