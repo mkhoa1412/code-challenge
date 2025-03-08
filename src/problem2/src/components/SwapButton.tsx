@@ -1,4 +1,3 @@
-// src/components/SwapButton.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import { FaArrowDown } from "react-icons/fa";

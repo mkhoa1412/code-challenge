@@ -1,4 +1,3 @@
-// src/components/CurrencyInput.tsx
 import React from "react";
 import Select, { StylesConfig, GroupBase } from "react-select";
 import { TokenDropdownOption } from "./CurrencySwapContainer";

@@ -1,4 +1,3 @@
-// src/utils/currencyUtils.ts
 export const formatCurrency = (
   amount: number,
   currencyCode: string = "USD"
@@ -9,16 +8,15 @@ export const formatCurrency = (
   }).format(amount);
 };
 
-// Add a new function for formatting token amounts (just numbers)
 export const formatTokenAmount = (
   amount: number | string,
   decimals: number = 8
 ): string => {
   const num = typeof amount === "string" ? parseFloat(amount) : amount;
   if (isNaN(num)) {
-    return ""; // Handle invalid input
+    return "";
   }
-  return num.toFixed(decimals); // Format to a fixed number of decimal places
+  return num.toFixed(decimals);
 };
 
 export const calculateExchangeAmount = (
@@ -33,8 +31,8 @@ export const calculateExchangeAmount = (
   ) {
     return "";
   }
-  const exchangeRate = fromCurrencyPrice / toCurrencyPrice; // Calculate directly
-  if (isNaN(exchangeRate)) return ""; //Check for NaN case
+  const exchangeRate = fromCurrencyPrice / toCurrencyPrice;
+  if (isNaN(exchangeRate)) return "";
 
   return (amount * exchangeRate).toString();
 };

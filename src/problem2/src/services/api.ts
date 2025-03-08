@@ -1,16 +1,13 @@
-// src/services/api.ts
 import axios from "axios";
 
 const API_BASE_URL = "https://interview.switcheo.com";
 
-// Define the type for a single token
 export interface Token {
   currency: string;
-  date: string; // Consider using Date if you need to work with dates
+  date: string;
   price: number;
 }
 
-// The API response is an array of Token objects
 export type TokenPrices = Token[];
 
 export const fetchTokenPrices = async (): Promise<TokenPrices> => {
@@ -21,6 +18,6 @@ export const fetchTokenPrices = async (): Promise<TokenPrices> => {
     return response.data;
   } catch (error) {
     console.error("Error fetching token prices:", error);
-    throw error; // Re-throw for handling in component
+    throw error;
   }
 };
