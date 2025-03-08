@@ -1,11 +1,10 @@
-// src/components/Layout.tsx
 import React from "react";
 
-interface Props {
+type LayoutProps = {
   children: React.ReactNode;
-}
+};
 
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-6 md:px-0 relative overflow-hidden">
       <div

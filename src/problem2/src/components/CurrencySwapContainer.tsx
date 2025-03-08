@@ -4,6 +4,7 @@ import { fetchTokenPrices, TokenPrices } from "../services/api";
 import defaultImageToken from "../assets/default-token-image.jpeg";
 import CurrencySwapForm from "./CurrencySwapForm";
 import PageLayout from "../layouts/PageLayout";
+import LoadingSkeleton from "./LoadingSkeleton";
 
 export type TokenDropdownOption = {
   value: string;
@@ -58,13 +59,19 @@ const CurrencySwapContainer: React.FC = () => {
 
   return (
     <PageLayout>
-      <h2 className="text-2xl font-semibold mb-4 sm:mb-6 text-center">Swap</h2>
-      <CurrencySwapForm
-        tokens={tokens}
-        isLoading={isLoading}
-        fetchTokenError={fetchTokenError}
-        tokenDropdownOptions={currencyOptions}
-      />
+      <h2 className="text-2xl font-semibold mb-4 sm:mb-6 text-center">
+        Currency Swap
+      </h2>
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <CurrencySwapForm
+          tokens={tokens}
+          isLoading={isLoading}
+          fetchTokenError={fetchTokenError}
+          tokenDropdownOptions={currencyOptions}
+        />
+      )}
     </PageLayout>
   );
 };
