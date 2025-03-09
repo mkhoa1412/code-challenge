@@ -9,12 +9,13 @@ import {
   CardTitle,
 } from "./components/ui/card";
 import { Controller, useForm } from "react-hook-form";
-import CurrencyLogo from "./components/custom/CurrencyLogo";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
+import CurrencyOption from "./components/custom/CurrentOption";
 
-type Currency = {
+export type Currency = {
+  id: string;
   currency: string;
   date: string;
   price: string;
@@ -39,13 +40,24 @@ function App() {
   });
   const { watch } = currencyForm;
 
+  const findCurrencyById = useCallback(
+    (id: string) => {
+      console.log({ id, currencies });
+      return currencies.find((c) => c.id === id);
+    },
+    [currencies]
+  );
+
   const fetchCurrencies = useCallback(async () => {
     try {
       const res = await fetch("https://interview.switcheo.com/prices.json", {
         method: "GET",
       });
-      const data = await res.json();
-      setCurrencies(data);
+      const data = (await res.json()) || [];
+      const currencies = data.map(
+        (it: Currency) => ({ ...it, id: Math.random().toString() } as Currency)
+      );
+      setCurrencies(currencies);
     } catch (error) {
       console.log({ error });
     }
@@ -60,26 +72,12 @@ function App() {
   }, [currencyForm]);
 
   const currencyOptions = useMemo(() => {
-    // filter duplicated currencies
-    const filteredCurrencies =
-      currencies.reduce((acc: Currency[], c: Currency) => {
-        if (!acc.some((it) => it.currency === c.currency)) {
-          acc.push(c);
-        }
-        return acc;
-      }, []) || [];
-
-    return filteredCurrencies.map(
+    return currencies.map(
       (currency: Currency) =>
-      ({
-        label: (
-          <div className="flex gap-3">
-            <CurrencyLogo currencyCode={currency.currency} />
-            <div>{currency.currency}</div>
-          </div>
-        ),
-        value: currency.currency,
-      } as Option)
+        ({
+          label: <CurrencyOption currency={currency} />,
+          value: currency.id,
+        } as Option)
     );
   }, [currencies]);
 
@@ -91,24 +89,23 @@ function App() {
         name === "amountToSend" ||
         name === "receiveCurrency"
       ) {
-        const sendCurrencyData = currencies.find(
-          (c) => c.currency === sendCurrency
-        );
-        const receiveCurrencyData = currencies.find(
-          (c) => c.currency === receiveCurrency
-        );
-        if (sendCurrencyData && receiveCurrencyData && amountToSend) {
-          const amountToreceive =
-            (Number(sendCurrencyData.price) /
-              Number(receiveCurrencyData.price)) *
-            amountToSend;
-          currencyForm.setValue("amountToreceive", amountToreceive);
+        if (sendCurrency && amountToSend && receiveCurrency) {
+          const sendCurrencyData = findCurrencyById(sendCurrency);
+          const receiveCurrencyData = findCurrencyById(receiveCurrency);
+
+          if (sendCurrencyData && receiveCurrencyData) {
+            const amountToreceive =
+              (Number(sendCurrencyData.price) /
+                Number(receiveCurrencyData.price)) *
+              amountToSend;
+            currencyForm.setValue("amountToreceive", amountToreceive);
+          }
         }
       }
     });
 
     return () => unsubscribe();
-  });
+  }, [watch, findCurrencyById, currencyForm]);
 
   useEffect(() => {
     fetchCurrencies();

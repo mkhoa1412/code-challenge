@@ -51,7 +51,7 @@ export default function CustomSelect(props: CustomSelectProps) {
         <Command>
           <CommandInput placeholder="Search..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No option found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
