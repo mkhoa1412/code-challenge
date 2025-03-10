@@ -1,4 +1,4 @@
-import { Currency } from "@/App";
+import { Currency } from "@/types";
 import CurrencyLogo from "../CurrencyLogo";
 
 export type CurrencyOptionProps = {

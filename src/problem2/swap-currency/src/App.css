@@ -1,11 +1,10 @@
 #root {
   height: 100vh;
-  background-color: gray;
   display: grid;
   place-items: center;
   place-content: center;
 }
 
 body {
-  background-color: gray;
+  background-color: #b5aeae;
 }

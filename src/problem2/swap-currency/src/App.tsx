@@ -13,13 +13,7 @@ import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import CurrencyOption from "./components/custom/CurrentOption";
-
-export type Currency = {
-  id: string;
-  currency: string;
-  date: string;
-  price: string;
-};
+import { Currency } from "./types";
 
 type CurrencyFormType = {
   receiveCurrency: string | null;
@@ -42,7 +36,6 @@ function App() {
 
   const findCurrencyById = useCallback(
     (id: string) => {
-      console.log({ id, currencies });
       return currencies.find((c) => c.id === id);
     },
     [currencies]
@@ -59,7 +52,7 @@ function App() {
       );
       setCurrencies(currencies);
     } catch (error) {
-      console.log({ error });
+      console.error({ error });
     }
   }, []);
 
@@ -74,10 +67,10 @@ function App() {
   const currencyOptions = useMemo(() => {
     return currencies.map(
       (currency: Currency) =>
-        ({
-          label: <CurrencyOption currency={currency} />,
-          value: currency.id,
-        } as Option)
+      ({
+        label: <CurrencyOption currency={currency} />,
+        value: currency.id,
+      } as Option)
     );
   }, [currencies]);
 
@@ -120,23 +113,22 @@ function App() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid w-full items-center gap-4">
-          <Label htmlFor="email">Amount to send</Label>
-          <div className="flex items-center gap-2 space-y-1.5">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Controller
-                control={currencyForm.control}
-                name="amountToSend"
-                render={({ field }) => (
-                  <Input
-                    type="number"
-                    placeholder="Enter amount..."
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </div>
+        <div className="grid w-full items-start gap-4">
+          <Label htmlFor="email">Amount To Send</Label>
+          <div className="flex items-end gap-2">
+            <Controller
+              control={currencyForm.control}
+              name="amountToSend"
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  placeholder="Enter amount..."
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  className="py-0"
+                />
+              )}
+            />
             <Controller
               control={currencyForm.control}
               name="sendCurrency"
@@ -151,23 +143,21 @@ function App() {
             />
           </div>
 
-          <Label htmlFor="email">Amount to receive</Label>
-          <div className="flex items-center gap-2 space-y-1.5">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Controller
-                control={currencyForm.control}
-                name="amountToreceive"
-                render={({ field }) => (
-                  <Input
-                    type="number"
-                    disabled
-                    placeholder="Received amount"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </div>
+          <Label htmlFor="email">Amount To Receive</Label>
+          <div className="flex items-center gap-2">
+            <Controller
+              control={currencyForm.control}
+              name="amountToreceive"
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  disabled
+                  placeholder="Received amount"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                />
+              )}
+            />
             <Controller
               control={currencyForm.control}
               name="receiveCurrency"
