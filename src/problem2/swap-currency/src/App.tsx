@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import CustomSelect, { Option } from "./components/custom/CustomSelect";
+import CurrenciesSelect from "./components/custom/CurrenciesSelect";
 import {
   Card,
   CardContent,
@@ -12,7 +12,6 @@ import { Controller, useForm } from "react-hook-form";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
-import CurrencyOption from "./components/custom/CurrentOption";
 import { Currency } from "./types";
 
 type CurrencyFormType = {
@@ -63,16 +62,6 @@ function App() {
       currencyForm.setValue("receiveCurrency", sendCurrency);
     }
   }, [currencyForm]);
-
-  const currencyOptions = useMemo(() => {
-    return currencies.map(
-      (currency: Currency) =>
-      ({
-        label: <CurrencyOption currency={currency} />,
-        value: currency.id,
-      } as Option)
-    );
-  }, [currencies]);
 
   useEffect(() => {
     const { unsubscribe } = watch((data, { name }) => {
@@ -133,8 +122,8 @@ function App() {
               control={currencyForm.control}
               name="sendCurrency"
               render={({ field }) => (
-                <CustomSelect
-                  options={currencyOptions}
+                <CurrenciesSelect
+                  currencies={currencies}
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Select currency"
@@ -162,8 +151,8 @@ function App() {
               control={currencyForm.control}
               name="receiveCurrency"
               render={({ field }) => (
-                <CustomSelect
-                  options={currencyOptions}
+                <CurrenciesSelect
+                  currencies={currencies}
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Select currency"
