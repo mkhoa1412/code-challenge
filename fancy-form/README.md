@@ -2,7 +2,7 @@
 
 A modern, responsive currency swap interface built with vanilla JavaScript, SCSS, and Vite. This application provides a sleek dark-themed UI for swapping between different cryptocurrencies with real-time exchange rates.
 
-![Currency Swap Demo](https://via.placeholder.com/800x400/0a0e27/00d4aa?text=Currency+Swap+Interface)
+![Currency Swap Demo](https://fancy-form-ashy.vercel.app/)
 
 ## ✨ Features
 
