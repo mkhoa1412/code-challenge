@@ -231,7 +231,7 @@ export const SwapForm = () => {
   return (
     <Box
       minH="100vh"
-      w="100vw"
+      w="100%"
       position="fixed"
       top={0}
       left={0}
@@ -246,24 +246,30 @@ export const SwapForm = () => {
         zIndex: -2,
       }}
     >
-      <Container maxW="container.md" py={24} centerContent>
+      <Container
+        maxW="container.md"
+        py={{ base: 4, md: 12 }}
+        px={{ base: 4, md: 6 }}
+        centerContent
+      >
         <Box
-          p={10}
+          p={{ base: 4, md: 6 }}
+          pb={{ base: 4, md: 5 }}
           borderRadius="2xl"
           boxShadow="2xl"
           bg="rgba(20, 22, 34, 0.85)"
           backdropFilter="blur(12px)"
           border="1px solid"
           borderColor="gray.700"
-          minW="500px"
+          width="100%"
+          maxW="500px"
         >
-          <VStack gap={6} align="stretch">
+          <VStack gap={{ base: 4, md: 6 }} align="stretch">
             <Heading
               textAlign="center"
-              mb={2}
               color="white"
               fontWeight="extrabold"
-              fontSize="2xl"
+              fontSize={{ base: "xl", md: "2xl" }}
             >
               Currency Swap
             </Heading>
@@ -274,15 +280,16 @@ export const SwapForm = () => {
               align="center"
               width="100%"
               bg="#222531"
-              p={5}
+              p={{ base: 3, md: 5 }}
               borderRadius={10}
               border="1px solid"
               borderColor="gray.700"
               _hover={{ borderColor: "blue.400" }}
               _focusWithin={{ borderColor: "blue.500" }}
               transition="all 0.2s ease"
+              flexDir={{ base: "column", sm: "row" }}
             >
-              <Box flex={1}>
+              <Box flex={1} width="100%">
                 <Input
                   type="number"
                   value={formData.amount === null ? "" : formData.amount}
@@ -299,21 +306,23 @@ export const SwapForm = () => {
                   min="0"
                   step="any"
                   size="md"
-                  height="64px"
                   border="none"
                   bg="#222531"
                   color="white"
                   _hover={{ border: "none" }}
                   _focus={{ border: "none", boxShadow: "none" }}
                   fontWeight="bold"
-                  fontSize="xl"
+                  fontSize={{ base: "lg", md: "xl" }}
                   pr={20}
                 />
                 <Text fontSize="sm" color="gray.400" ml={1}>
                   Balance: 100 {formData.fromCurrency}
                 </Text>
               </Box>
-              <Box minW="120px">
+              <Box
+                width={{ base: "100%", sm: "150px" }}
+                mt={{ base: 2, sm: 0 }}
+              >
                 <TokenSelect
                   value={formData.fromCurrency}
                   onChange={(value) =>
@@ -358,17 +367,17 @@ export const SwapForm = () => {
               align="flex-end"
               width="100%"
               bg="#222531"
-              p={5}
+              p={{ base: 3, md: 5 }}
               borderRadius={10}
               border="1px solid"
               borderColor="gray.700"
               _hover={{ borderColor: "blue.400" }}
               _focusWithin={{ borderColor: "blue.500" }}
               transition="all 0.2s ease"
+              flexDir={{ base: "column", sm: "row" }}
             >
-              <Box flex={1}>
+              <Box flex={1} width="100%">
                 <Box
-                  height="64px"
                   display="flex"
                   alignItems="center"
                   bg="#222531"
@@ -378,7 +387,7 @@ export const SwapForm = () => {
                 >
                   <Text
                     fontWeight="bold"
-                    fontSize="2xl"
+                    fontSize={{ base: "lg", md: "2xl" }}
                     color="white"
                     flex={1}
                     isTruncated
@@ -397,7 +406,10 @@ export const SwapForm = () => {
                   Balance: 0 {formData.toCurrency}
                 </Text>
               </Box>
-              <Box minW="120px">
+              <Box
+                width={{ base: "100%", sm: "150px" }}
+                mt={{ base: 2, sm: 0 }}
+              >
                 <TokenSelect
                   value={formData.toCurrency}
                   onChange={(value) =>
@@ -410,7 +422,11 @@ export const SwapForm = () => {
 
             {/* Exchange Rate */}
             {exchangeRate > 0 && (
-              <Text fontSize="md" color="gray.400" textAlign="center">
+              <Text
+                fontSize={{ base: "sm", md: "md" }}
+                color="gray.400"
+                textAlign="center"
+              >
                 1 {formData.fromCurrency} ≈ {exchangeRate.toFixed(6)}{" "}
                 {formData.toCurrency}
               </Text>
@@ -426,7 +442,11 @@ export const SwapForm = () => {
               py={3}
               mt={2}
             >
-              <VStack align="stretch" spacing={1} fontSize="md">
+              <VStack
+                align="stretch"
+                spacing={1}
+                fontSize={{ base: "sm", md: "md" }}
+              >
                 <HStack justify="space-between">
                   <Text color="gray.400">You will pay</Text>
                   <HStack>
@@ -476,9 +496,9 @@ export const SwapForm = () => {
                 formData.amount <= 0
               }
               size="lg"
-              height="56px"
+              height="50px"
               fontWeight="bold"
-              fontSize="xl"
+              fontSize={{ base: "lg", md: "xl" }}
               borderRadius="xl"
               boxShadow="lg"
               bgGradient="linear(to-r, blue.400, cyan.400)"
@@ -489,11 +509,11 @@ export const SwapForm = () => {
               Convert
             </Button>
             {showError && (
-              <Box mt={-2} mb={2} w="full" textAlign="center">
+              <Box mt={-2} w="full" textAlign="center">
                 <Text
                   color="red.400"
                   fontWeight="semibold"
-                  fontSize="md"
+                  fontSize={{ base: "sm", md: "md" }}
                   bg="rgba(255,0,0,0.08)"
                   borderRadius="md"
                   py={2}
@@ -509,42 +529,56 @@ export const SwapForm = () => {
         <ModalOverlay backdropFilter="blur(2px)" />
         <ModalContent
           borderRadius="xl"
-          p={6}
+          p={{ base: 4, md: 6 }}
           bg="rgba(20, 22, 34, 0.97)"
           color="white"
+          mx={4}
         >
-          <ModalHeader textAlign="center" pb={2} fontWeight="bold">
+          <ModalHeader
+            textAlign="center"
+            pb={2}
+            fontWeight="bold"
+            fontSize={{ base: "lg", md: "xl" }}
+          >
             Swap Successful!
           </ModalHeader>
           <ModalCloseButton color="white" />
           <ModalBody>
             <VStack spacing={4} align="stretch">
               <Box textAlign="center">
-                <Text fontSize="lg" fontWeight="medium" color="gray.300">
+                <Text
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight="medium"
+                  color="gray.300"
+                >
                   You have successfully swapped:
                 </Text>
                 <HStack justify="center" spacing={2} mt={2}>
                   <Image
                     src={getTokenIconUrl(swapResult?.from || "")}
                     alt={swapResult?.from}
-                    boxSize="32px"
+                    boxSize={{ base: "24px", md: "32px" }}
                     fallbackSrc="https://via.placeholder.com/32"
                   />
-                  <Text fontSize="2xl" fontWeight="bold">
+                  <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold">
                     {swapResult?.amount} {swapResult?.from}
                   </Text>
                 </HStack>
-                <Text fontSize="lg" color="gray.400" my={2}>
+                <Text
+                  fontSize={{ base: "md", md: "lg" }}
+                  color="gray.400"
+                  my={2}
+                >
                   to
                 </Text>
                 <HStack justify="center" spacing={2}>
                   <Image
                     src={getTokenIconUrl(swapResult?.to || "")}
                     alt={swapResult?.to}
-                    boxSize="32px"
+                    boxSize={{ base: "24px", md: "32px" }}
                     fallbackSrc="https://via.placeholder.com/32"
                   />
-                  <Text fontSize="2xl" fontWeight="bold">
+                  <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold">
                     {swapResult?.convertedAmount.toFixed(6)} {swapResult?.to}
                   </Text>
                 </HStack>
