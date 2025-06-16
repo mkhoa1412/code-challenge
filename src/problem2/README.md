@@ -9,7 +9,7 @@ A simple currency swap form built with **React**, **TypeScript**, and **Vite**, 
 - 🟢 Node.js version ">=18"
 
 # Run dev: yarn install -> yarn dev
-# Link demo: https://pham-thi-bich-99-tech-git-main-bichiphams-projects.vercel.app/
+# Link demo: https://pham-thi-bich-fe-code-challenge-48z.vercel.app/
 
 # ✨ Features
 - Live Token Fetching:
