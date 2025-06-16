@@ -28,18 +28,21 @@ const getPriority = (blockchain: string): number => {
 
 const WalletPage: React.FC<Props> = (props: Props) => {
   const { children, ...rest } = props;
-  const balances = useWalletBalances(); // assumed to return WalletBalance[]
-  const prices = usePrices(); // assumed to return { [currency: string]: number }
-
+  const balances = useWalletBalances();
+  const prices = usePrices();
 
   const sortedAndFilteredBalances = useMemo(() => {
     // map balances with their priority, avoiding repeated getPriority calls
-    const balancesWithPriority = balances?.map((balance: WalletBalance) => {
-      const priority = getPriority(balance.blockchain);
-      return { ...balance, priority };
-    }).filter((balanceWithPriority) => {
-      return balanceWithPriority.priority > -99 && balanceWithPriority.amount > 0;
-    });
+    const balancesWithPriority = balances
+      ?.map((balance: WalletBalance) => {
+        const priority = getPriority(balance.blockchain);
+        return { ...balance, priority };
+      })
+      .filter((balanceWithPriority) => {
+        return (
+          balanceWithPriority.priority > -99 && balanceWithPriority.amount > 0
+        );
+      });
     return balancesWithPriority?.sort((lhs, rhs) => lhs - rhs);
   }, [balances]);
 
@@ -47,17 +50,17 @@ const WalletPage: React.FC<Props> = (props: Props) => {
     return sortedAndFilteredBalances.map((balance: WalletBalance) => {
       return {
         ...balance,
-        formatted: balance?.amount?.toFixed()
+        formatted: balance?.amount?.toFixed(),
       };
     });
   }, [sortedAndFilteredBalances]); // Only re-run if sortedAndFilteredBalances change
 
-  const rows = formattedBalances?.map((balance: FormattedWalletBalance)  => {
+  const rows = formattedBalances?.map((balance: FormattedWalletBalance) => {
     const usdValue = (prices[balance?.currency] || 0) * balance?.amount;
 
     return (
       <WalletRow
-        className={''}
+        className={""}
         key={balance?.currency}
         amount={balance?.amount}
         usdValue={usdValue}
@@ -66,7 +69,12 @@ const WalletPage: React.FC<Props> = (props: Props) => {
     );
   });
 
-  return <div {...rest}>{children}{rows}</div>;
+  return (
+    <div {...rest}>
+      {children}
+      {rows}
+    </div>
+  );
 };
 
 export default WalletPage;
