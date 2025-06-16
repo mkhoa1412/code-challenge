@@ -39,24 +39,24 @@ const sum_to_n_b = (n: number): number | null => {
 
 //Apply memoization
 const sum_to_n_c = (() => {
-		const cache = new Map<number, number | null>();
-		return function(n: any): number | null {
-			if (!checkSafeNumber(n)) return null;
-			if (cache.has(n)) {
-				return cache.get(n)!;
-			}
-			let sum = 0;
-			for (let i = 1; i <= n; i++) {
-				sum += i;
-			}
-			cache.set(n, sum);
-			return sum;
-		};
-	})();
+	const cache = new Map<number, number | null>();
+	return function(n: any): number | null {
+		if (!checkSafeNumber(n)) return null;
+		if (cache.has(n)) {
+			return cache.get(n)!;
+		}
+		let sum = 0;
+		for (let i = 1; i <= n; i++) {
+			sum += i;
+		}
+		cache.set(n, sum);
+		return sum;
+	};
+})();
 
-	console.log(sum_to_n_a(10));
-	console.log(sum_to_n_b(10));
-	console.log(sum_to_n_c(10));
-	console.log(sum_to_n_c('abc'));
-	console.log(sum_to_n_c(-1));
-	console.log(sum_to_n_c(134217727));
+console.log(sum_to_n_a(10));
+console.log(sum_to_n_b(10));
+console.log(sum_to_n_c(10));
+console.log(sum_to_n_c('abc'));
+console.log(sum_to_n_c(-1));
+console.log(sum_to_n_c(134217727));
