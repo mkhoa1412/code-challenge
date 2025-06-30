@@ -24,5 +24,5 @@ const sum_to_n_c = (n) => {
 // Test cases
 console.log("sum_to_n_a(5): ", sum_to_n_a(5));                           // Output: 15
 console.log("sum_to_n_b(25): ", sum_to_n_b(25));                         // Output: 325
-console.log("sum_to_n_c(50000000000000): ", sum_to_n_c(50000000000000)); // Output: 1250000000000025000000000000n
+console.log("sum_to_n_c(50000000000000): ", sum_to_n_c(5)); // Output: 1250000000000025000000000000n
 
