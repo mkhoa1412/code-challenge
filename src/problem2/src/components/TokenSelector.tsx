@@ -24,7 +24,7 @@ export default function TokenSelector({
         {value ? (
           <>
             <img
-              src={value.logoURI}
+              src={getTokenLogo(value.symbol)}
               alt={value.symbol}
               className="w-5 h-5 rounded-full"
             />
