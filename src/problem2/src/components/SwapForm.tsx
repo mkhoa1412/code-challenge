@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import swapIcon from "@/assets/img/swap-logo.png";
 import { useAppState } from "@/store/useAppState";
 
-export default function SwapForm() {
+const SwapForm = () => {
   const { tokens, fetchTokens } = useTokenStore();
 
   const [fromToken, setFromToken] = useState<TokenInfo | null>(null);
@@ -189,4 +189,6 @@ export default function SwapForm() {
       </div>
     </div>
   );
-}
+};
+
+export default SwapForm;

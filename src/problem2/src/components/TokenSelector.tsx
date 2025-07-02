@@ -4,12 +4,12 @@ import { getTokenLogo } from "@/utils/getTokenLogo";
 import { Icon } from "@iconify/react";
 import { useRef, useState } from "react";
 
-export default function TokenSelector({
+const TokenSelector = ({
   value,
   onChange,
   tokens,
   placeholder = "Select token",
-}: TokenSelectProps) {
+}: TokenSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -61,4 +61,6 @@ export default function TokenSelector({
       )}
     </div>
   );
-}
+};
+
+export default TokenSelector;
