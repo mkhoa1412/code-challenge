@@ -1,0 +1,41 @@
+.tokenSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.tokenSelector:hover {
+  border-color: #667eea;
+  transform: translateY(-1px);
+}
+
+.tokenIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.dropdownArrow {
+  width: 16px;
+  height: 16px;
+  fill: #64748b;
+  margin-left: auto;
+}
+
+.placeholder {
+  color: #64748b;
+}
+
+@media (max-width: 480px) {
+  .tokenSelector {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

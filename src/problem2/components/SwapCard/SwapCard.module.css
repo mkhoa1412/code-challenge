@@ -1,0 +1,178 @@
+.swapCard {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 480px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 32px;
+  color: #1a1a1a;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tokenSection {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tokenSection:focus-within {
+  border-color: #667eea;
+  background: #fff;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.amountInput {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: right;
+  outline: none;
+  color: #1a1a1a;
+}
+
+.amountInput::placeholder {
+  color: #cbd5e1;
+}
+
+.amountInput:disabled {
+  color: #64748b;
+}
+
+.balance {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 8px;
+  text-align: right;
+}
+
+.swapButton {
+  display: block;
+  margin: -3px auto;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1;
+  position: relative;
+  text-align: center;
+}
+
+.swapButton:hover {
+  transform: rotate(180deg) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.swapButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.swapButton:disabled:hover {
+  transform: none;
+}
+
+.swapIcon {
+  width: 20px;
+  height: 20px;
+  fill: #667eea;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.submitButton:enabled {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.submitButton:enabled:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.buttonSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .swapCard {
+    padding: 24px;
+  }
+  
+  .inputGroup {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .amountInput {
+    text-align: left;
+    font-size: 20px;
+  }
+}
