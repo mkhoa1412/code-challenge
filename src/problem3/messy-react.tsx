@@ -14,21 +14,23 @@ type FormattedWalletBalance = WalletBalance & {
 
 type Props = Omit<HTMLProps<HTMLDivElement>, "children">;
 
+const LOWEST_PRIORITY = -99;
+
 const mapPriority: Record<Blockchain, number> = {
-  Osmosis: 100,
-  Ethereum: 50,
-  Arbitrum: 30,
-  Zilliqa: 20,
-  Neo: 20,
+  Osmosis: 4,
+  Ethereum: 3,
+  Arbitrum: 2,
+  Zilliqa: 1,
+  Neo: 1,
 };
 
 const getPriority = (blockchain: Blockchain): number => {
-  return mapPriority[blockchain] ?? -99;
+  return mapPriority[blockchain] ?? LOWEST_PRIORITY;
 };
 
 const checkIsInvalidBalance = (balance: WalletBalance) => {
   const balancePriority = getPriority(balance.blockchain);
-  if (balancePriority > -99 && balance.amount <= 0) {
+  if (balancePriority > LOWEST_PRIORITY && balance.amount <= 0) {
     return true;
   }
   return false;
