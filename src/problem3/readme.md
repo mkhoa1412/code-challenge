@@ -206,7 +206,7 @@ Next, I will go through each block and line of code to review and improve them.
   }, [balances]);
   ```
 
-- Lastly, the `rows` variable is used to render the list of wallet balance components. However, there are a couple of issues to address:
+- Next, the `rows` variable is used to render the list of wallet balance components. However, there are a couple of issues to address:
 
   - The `classes` reference (e.g., `className={classes.row}`) is undefined in the current code, which would result in a runtime error. Since it's not used elsewhere or provided, it should simply be removed.
   - The `key` used in `.map()` is currently the array index, which is discouraged in React. Using `index` as a key can lead to rendering bugs and performance issues, especially when the order of items may change. Instead, it's better to use a **stable and unique identifier**. In this case, `blockchain` is a suitable choice **if each balance is guaranteed to have a unique blockchain.**
@@ -224,6 +224,18 @@ Next, I will go through each block and line of code to review and improve them.
       />
     );
   });
+  ```
+
+- Finally, we change the values of `mapPriority` to auto-incrementing integers to make it easier to add or maintain entries.
+
+  ```tsx
+  const mapPriority: Record<Blockchain, number> = {
+    Osmosis: 4,
+    Ethereum: 3,
+    Arbitrum: 2,
+    Zilliqa: 1,
+    Neo: 1,
+  };
   ```
 
 **Now we have the code after modifying**
@@ -245,21 +257,23 @@ type FormattedWalletBalance = WalletBalance & {
 
 type Props = Omit<HTMLProps<HTMLDivElement>, "children">;
 
+const LOWEST_PRIORITY = -99;
+
 const mapPriority: Record<Blockchain, number> = {
-  Osmosis: 100,
-  Ethereum: 50,
-  Arbitrum: 30,
-  Zilliqa: 20,
-  Neo: 20,
+  Osmosis: 4,
+  Ethereum: 3,
+  Arbitrum: 2,
+  Zilliqa: 1,
+  Neo: 1,
 };
 
 const getPriority = (blockchain: Blockchain): number => {
-  return mapPriority[blockchain] ?? -99;
+  return mapPriority[blockchain] ?? LOWEST_PRIORITY;
 };
 
 const checkIsInvalidBalance = (balance: WalletBalance) => {
   const balancePriority = getPriority(balance.blockchain);
-  if (balancePriority > -99 && balance.amount <= 0) {
+  if (balancePriority > LOWEST_PRIORITY && balance.amount <= 0) {
     return true;
   }
   return false;
