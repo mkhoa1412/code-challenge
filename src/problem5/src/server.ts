@@ -239,8 +239,10 @@ const startApplication = async () => {
   }
 };
 
-// Start the application
-startApplication();
+// Start the application only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  startApplication();
+}
 
 // Server error handling is now inside startApplication function
 

@@ -50,10 +50,35 @@ services:
       # - ./tsconfig.json:/app/tsconfig.json
       - app_logs:/app/logs
 
+  # E2E Test Service
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: resources_test
+    environment:
+      NODE_ENV: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-appuser}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-password}
+      DB_NAME: resources_test_db
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      - test_logs:/app/logs
+    profiles:
+      - test
+
 volumes:
   mysql_data:
     driver: local
   app_logs:
+    driver: local
+  test_logs:
     driver: local
 
 networks:

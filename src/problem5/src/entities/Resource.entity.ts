@@ -33,15 +33,12 @@ export class Resource {
   isActive!: boolean;
 
   @CreateDateColumn({ 
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP' 
+    type: 'timestamp'
   })
   createdAt!: Date;
 
   @UpdateDateColumn({ 
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP' 
+    type: 'timestamp'
   })
   updatedAt!: Date;
 

@@ -9,10 +9,10 @@ dotenv.config();
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306'),
-  username: process.env.DB_USER || 'admin',
-  password: process.env.DB_PASSWORD || 'password123',
-  database: process.env.DB_NAME || 'expressjs_crud',
+  port: parseInt(process.env.DB_PORT || '3307'),
+  username: process.env.DB_USER || 'appuser',
+  password: process.env.DB_PASSWORD || 'password',
+  database: process.env.DB_NAME || 'resources_db',
   
   // Entity configuration - use direct class reference for reliability
   entities: [Resource],
