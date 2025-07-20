@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
+import path from 'path';
 
-export const db = new Database('data.db');
+export const db = new Database(path.resolve(__dirname, 'data.db'));
 
 // Initialize table if not exists
 db.exec(`
