@@ -1,81 +1,5 @@
 # Messy React
 
-```tsx
-interface WalletBalance {
-  currency: string;
-  amount: number;
-}
-interface FormattedWalletBalance {
-  currency: string;
-  amount: number;
-  formatted: string;
-}
-
-interface Props extends BoxProps {}
-const WalletPage: React.FC<Props> = (props: Props) => {
-  const { children, ...rest } = props;
-  const balances = useWalletBalances();
-  const prices = usePrices();
-
-  const getPriority = (blockchain: any): number => {
-    switch (blockchain) {
-      case "Osmosis":
-        return 100;
-      case "Ethereum":
-        return 50;
-      case "Arbitrum":
-        return 30;
-      case "Zilliqa":
-        return 20;
-      case "Neo":
-        return 20;
-      default:
-        return -99;
-    }
-  };
-
-  const sortedBalances = useMemo(() => {
-    return balances
-      .filter((balance: WalletBalance) => {
-        return false;
-      })
-      .sort((lhs: WalletBalance, rhs: WalletBalance) => {
-        const leftPriority = getPriority(lhs.blockchain);
-        const rightPriority = getPriority(rhs.blockchain);
-        if (leftPriority > rightPriority) {
-          return -1;
-        } else if (rightPriority > leftPriority) {
-          return 1;
-        }
-      });
-  }, [balances, prices]);
-
-  const formattedBalances = sortedBalances.map((balance: WalletBalance) => {
-    return {
-      ...balance,
-      formatted: balance.amount.toFixed(),
-    };
-  });
-
-  const rows = sortedBalances.map(
-    (balance: FormattedWalletBalance, index: number) => {
-      const usdValue = prices[balance.currency] * balance.amount;
-      return (
-        <WalletRow
-          className={classes.row}
-          key={index}
-          amount={balance.amount}
-          usdValue={usdValue}
-          formattedAmount={balance.formatted}
-        />
-      );
-    }
-  );
-
-  return <div {...rest}>{rows}</div>;
-};
-```
-
 **To refactor the code in this file**, I first reviewed the component to understand its purpose. It is designed to **display a list of wallet balances (such as coins or tokens), sorted by blockchain priority and formatted with their corresponding USD values.**
 
 Next, I will go through each block and line of code to review and improve them.
@@ -139,7 +63,7 @@ Next, I will go through each block and line of code to review and improve them.
   }
   ```
 
-- Next, the logic for filtering out balances based on priority and amount (`amount <= 0`) should be refactored for better readability. The original code uses an unclear variable name (`lhsPriority`) and embeds the logic inline. Instead, we should:
+- Next, the original filtering logic uses the condition `amount <= 0` to exclude balances, but this is incorrect for our needs. We want to keep only balances where the amount is greater than zero (`amount > 0`), because balances with zero or negative amounts are not meaningful to display or process. To improve readability and correctness, we should:
 
   - Rename the variable for clarity (e.g., `balancePriority`)
   - Move the filtering logic into a **named helper function outside the component**
@@ -147,7 +71,7 @@ Next, I will go through each block and line of code to review and improve them.
   ```tsx
   const checkIsInvalidBalance = (balance: WalletBalance) => {
   	const balancePriority = getPriority(balance.blockchain);
-  	if (balancePriority > -99 && balance.amount <= 0) {
+  	if (balancePriority > -99 && balance.amount > 0) {
   	   return true
   	}
   	return false
@@ -273,7 +197,7 @@ const getPriority = (blockchain: Blockchain): number => {
 
 const checkIsInvalidBalance = (balance: WalletBalance) => {
   const balancePriority = getPriority(balance.blockchain);
-  if (balancePriority > LOWEST_PRIORITY && balance.amount <= 0) {
+  if (balancePriority > LOWEST_PRIORITY && balance.amount > 0) {
     return true;
   }
   return false;

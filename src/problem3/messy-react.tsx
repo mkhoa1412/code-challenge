@@ -30,7 +30,7 @@ const getPriority = (blockchain: Blockchain): number => {
 
 const checkIsInvalidBalance = (balance: WalletBalance) => {
   const balancePriority = getPriority(balance.blockchain);
-  if (balancePriority > LOWEST_PRIORITY && balance.amount <= 0) {
+  if (balancePriority > LOWEST_PRIORITY && balance.amount > 0) {
     return true;
   }
   return false;
