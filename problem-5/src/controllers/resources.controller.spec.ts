@@ -34,21 +34,63 @@ afterEach(async () => {
 
 describe("Resource Controller Integration", () => {
   describe("#POST /resources", () => {
-    it("Should store resource", async () => {
-      const res = await request(app)
-        .post("/resources")
-        .send(mockResource)
-        .expect(201);
-      expect(res.body).toHaveProperty("_id");
-      expect(res.body.name).toBe(mockResource.name);
+    describe("When valid data", () => {
+      it("Should store resource", async () => {
+        const res = await request(app)
+          .post("/resources")
+          .send(mockResource)
+          .expect(201);
+        expect(res.body).toHaveProperty("_id");
+        expect(res.body.name).toBe(mockResource.name);
 
-      // Make sure resource has been created
-      const afterCreateResource = await mongoose.connection.db
-        .collection(RESOURCE_COLLECTION)
-        .findOne({});
-      // Log the list of collections
-      expect(afterCreateResource).not.toBeNull();
-      expect(afterCreateResource!.name).toEqual(mockResource.name);
+        // Make sure resource has been created
+        const afterCreateResource = await mongoose.connection.db
+          .collection(RESOURCE_COLLECTION)
+          .findOne({});
+        // Log the list of collections
+        expect(afterCreateResource).not.toBeNull();
+        expect(afterCreateResource!.name).toEqual(mockResource.name);
+      });
+    });
+
+    describe("When given invalid data", () => {
+      const invalidDataCases = [
+        {
+          description: "When name is empty string",
+          value: "",
+          expectedCode: 400,
+          expectedMessage: "Validation failed"
+        },
+        {
+          description: "When name is too long",
+          value: "a".repeat(101),
+          expectedCode: 400,
+          expectedMessage: "Validation failed"
+        },
+        {
+          description: "When name is not a string",
+          value: 123,
+          expectedCode: 400,
+          expectedMessage: "Validation failed"
+        }
+      ];
+
+      invalidDataCases.forEach(
+        ({ description, value, expectedCode, expectedMessage }) => {
+          describe(description, () => {
+            it("Should return 400", async () => {
+              const res = await request(app)
+                .post("/resources")
+                .send({ name: value })
+                .expect(expectedCode);
+
+              expect(res.body.message).toBe(expectedMessage);
+              expect(res.body.errors).toBeDefined();
+              expect(res.body.errors.length).toBeGreaterThan(0);
+            });
+          });
+        }
+      );
     });
   });
 
@@ -105,17 +147,74 @@ describe("Resource Controller Integration", () => {
 
   describe("#PUT /resources/:id", () => {
     describe("When resource exists", () => {
-      it("should update resource", async () => {
-        const createRes = await request(app)
-          .post("/resources")
-          .send(mockResource);
-        const id = createRes.body._id;
-        const update = { name: "Updated Resource" };
-        const res = await request(app)
-          .put(`/resources/${id}`)
-          .send(update)
-          .expect(200);
-        expect(res.body.name).toBe(update.name);
+      describe("When valid data", () => {
+        it("should update resource", async () => {
+          const createRes = await request(app)
+            .post("/resources")
+            .send(mockResource);
+          const id = createRes.body._id;
+          const update = { name: "Updated Resource" };
+          const res = await request(app)
+            .put(`/resources/${id}`)
+            .send(update)
+            .expect(200);
+          expect(res.body.name).toBe(update.name);
+        });
+
+        it("should update resource with empty body", async () => {
+          const createRes = await request(app)
+            .post("/resources")
+            .send(mockResource);
+          const id = createRes.body._id;
+          const res = await request(app)
+            .put(`/resources/${id}`)
+            .send({})
+            .expect(200);
+          expect(res.body.name).toBe(mockResource.name);
+        });
+      });
+
+      describe("When given invalid body", () => {
+        const invalidDataCases = [
+          {
+            description: "When name is empty string",
+            value: "",
+            expectedCode: 400,
+            expectedMessage: "Validation failed"
+          },
+          {
+            description: "When name is too long",
+            value: "a".repeat(101),
+            expectedCode: 400,
+            expectedMessage: "Validation failed"
+          },
+          {
+            description: "When name is not a string",
+            value: 123,
+            expectedCode: 400,
+            expectedMessage: "Validation failed"
+          }
+        ];
+
+        invalidDataCases.forEach(
+          ({ description, value, expectedCode, expectedMessage }) => {
+            describe(description, () => {
+              it("Should return 400", async () => {
+                const createRes = await request(app)
+                  .post("/resources")
+                  .send(mockResource);
+                const id = createRes.body._id;
+                const res = await request(app)
+                  .put(`/resources/${id}`)
+                  .send({ name: value })
+                  .expect(expectedCode);
+                expect(res.body.message).toBe(expectedMessage);
+                expect(res.body.errors).toBeDefined();
+                expect(res.body.errors.length).toBeGreaterThan(0);
+              });
+            });
+          }
+        );
       });
     });
 
