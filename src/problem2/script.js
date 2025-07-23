@@ -35,7 +35,9 @@ const elements = {
   successModal: document.getElementById('success-modal'),
   closeSuccessModal: document.getElementById('close-success-modal'),
   swapForm: document.getElementById('swap-form'),
-  maxButton: document.querySelector('.max-button')
+  maxButton: document.querySelector('.max-btn'),
+  submitText: document.querySelector('.submit-text'),
+  loadingIcon: document.querySelector('.loading-icon')
 };
 
 // Initialize the application
@@ -124,7 +126,9 @@ function setupEventListeners() {
   elements.swapDirectionBtn.addEventListener('click', swapTokens);
 
   // MAX button
-  elements.maxButton.addEventListener('click', setMaxAmount);
+  if (elements.maxButton) {
+    elements.maxButton.addEventListener('click', setMaxAmount);
+  }
 
   // Form submission
   elements.swapForm.addEventListener('submit', handleSwapSubmission);
@@ -183,7 +187,7 @@ function populateTokenList(filter = '') {
       <div class="token-item" data-symbol="${token.symbol}">
         <img src="${token.iconUrl}" alt="${token.symbol}" onerror="this.style.display='none'">
         <div class="token-details">
-          <div class="token-name">${token.symbol}</div>
+          <span class="token-name">${token.symbol}</span>
           <div class="token-price">${priceDisplay}</div>
         </div>
       </div>
@@ -246,6 +250,7 @@ function updateToTokenDisplay() {
 function handleFromAmountChange(e) {
   state.fromAmount = parseFloat(e.target.value) || 0;
   calculateToAmount();
+  updateUSDAmounts();
   validateInputs();
 }
 
@@ -270,6 +275,28 @@ function calculateToAmount() {
 
   elements.toAmount.value = state.toAmount.toFixed(6);
   calculateExchangeRate();
+}
+
+// Update USD amounts
+function updateUSDAmounts() {
+  const fromUsdElement = document.querySelector('.source-token .amount-usd');
+  const toUsdElement = document.querySelector('.destination-token .amount-usd');
+  
+  if (fromUsdElement && state.selectedFromToken && state.fromAmount) {
+    const fromPrice = state.prices[state.selectedFromToken.symbol];
+    if (fromPrice) {
+      const usdAmount = state.fromAmount * fromPrice;
+      fromUsdElement.textContent = `~$${usdAmount.toFixed(2)}`;
+    }
+  }
+  
+  if (toUsdElement && state.selectedToToken && state.toAmount) {
+    const toPrice = state.prices[state.selectedToToken.symbol];
+    if (toPrice) {
+      const usdAmount = state.toAmount * toPrice;
+      toUsdElement.textContent = `~$${usdAmount.toFixed(2)}`;
+    }
+  }
 }
 
 // Calculate and display exchange rate
@@ -301,6 +328,7 @@ function swapTokens() {
   elements.fromAmount.value = state.fromAmount ? state.fromAmount.toFixed(6) : '';
   elements.toAmount.value = state.toAmount ? state.toAmount.toFixed(6) : '';
 
+  updateUSDAmounts();
   calculateExchangeRate();
   updateSwapButton();
 }
@@ -312,6 +340,7 @@ function setMaxAmount() {
   state.fromAmount = state.selectedFromToken.balance;
   elements.fromAmount.value = state.fromAmount.toFixed(6);
   calculateToAmount();
+  updateUSDAmounts();
   validateInputs();
 }
 
@@ -347,13 +376,19 @@ function updateSwapButton() {
   
   if (!state.selectedFromToken || !state.selectedToToken) {
     elements.swapSubmitBtn.disabled = true;
-    elements.swapSubmitBtn.querySelector('.btn-text').textContent = 'Select tokens to swap';
+    if (elements.submitText) {
+      elements.submitText.textContent = 'Select tokens to swap';
+    }
   } else if (state.isSwapping) {
     elements.swapSubmitBtn.disabled = true;
-    elements.swapSubmitBtn.querySelector('.btn-text').textContent = 'Swapping...';
+    if (elements.submitText) {
+      elements.submitText.textContent = 'Swapping...';
+    }
   } else {
     elements.swapSubmitBtn.disabled = false;
-    elements.swapSubmitBtn.querySelector('.btn-text').textContent = 'Confirm Swap';
+    if (elements.submitText) {
+      elements.submitText.textContent = 'Confirm Swap';
+    }
   }
 }
 
@@ -367,8 +402,12 @@ async function handleSwapSubmission(e) {
   updateSwapButton();
 
   // Show loading spinner
-  elements.swapSubmitBtn.querySelector('.loading-spinner').style.display = 'block';
-  elements.swapSubmitBtn.querySelector('.btn-text').style.opacity = '0';
+  if (elements.loadingIcon) {
+    elements.loadingIcon.style.display = 'block';
+  }
+  if (elements.submitText) {
+    elements.submitText.style.opacity = '0';
+  }
 
   try {
     // Simulate API call with delay
@@ -382,8 +421,12 @@ async function handleSwapSubmission(e) {
   } finally {
     state.isSwapping = false;
     updateSwapButton();
-    elements.swapSubmitBtn.querySelector('.loading-spinner').style.display = 'none';
-    elements.swapSubmitBtn.querySelector('.btn-text').style.opacity = '1';
+    if (elements.loadingIcon) {
+      elements.loadingIcon.style.display = 'none';
+    }
+    if (elements.submitText) {
+      elements.submitText.style.opacity = '1';
+    }
   }
 }
 
@@ -409,6 +452,10 @@ function resetForm() {
   elements.toBalance.textContent = '0.00';
   elements.exchangeInfo.style.display = 'none';
 
+  // Reset USD amounts
+  const usdElements = document.querySelectorAll('.amount-usd');
+  usdElements.forEach(el => el.textContent = '~$0.00');
+
   clearError();
   updateSwapButton();
 }
@@ -425,7 +472,6 @@ function clearError() {
 
 // Loading states
 function showLoading() {
-  // Could add a global loading overlay here
   console.log('Loading...');
 }
 
