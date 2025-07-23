@@ -1,0 +1,38 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import Home from '@/pages/home'
+import NotFound from '@/pages/not-found'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Layout from '@/components/layout'
+import { Theme } from '@radix-ui/themes'
+
+import '@radix-ui/themes/styles.css'
+import './main.css'
+import './reset.css'
+
+const queryClient = new QueryClient()
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        index: true, // this acts like path: "", but cleaner
+        element: <Home />,
+      },
+    ],
+    errorElement: <NotFound />,
+  },
+])
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <Theme>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </Theme>
+  </StrictMode>,
+)
