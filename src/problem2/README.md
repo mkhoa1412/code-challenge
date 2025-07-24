@@ -1,69 +1,42 @@
-# React + TypeScript + Vite
+# 💱 Swap Form Challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Screenshot 1](./screenshot-1.png)
+![Screenshot 2](./screenshot-2.png)
 
-Currently, two official plugins are available:
+## 📋 Functional Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Real-time Pricing**: Prices are fetched from the provided API using an interval to keep the latest data updated.
+2. **Random Token Balances**: Random balances are generated for a variety of tokens on initial load.
+3. **From Token Filtering**: Inspired by _Problem 3_, only allow selecting "from" tokens that:
+   - Are in a predefined priority list
+   - Have a non-zero balance
+   - Exist in the current price list
+4. **To Token Constraints**:
+   - Can only select the "to" token after the "from" token is selected
+   - The "to" token must be different from the "from" token and must have a valid price
+5. **Amount Input Logic**:
+   - Input for "from amount" is only enabled after both tokens are selected
+   - The "to amount" is automatically calculated based on the current prices and input amount
+6. **Balance Validation**: Users cannot input a "from amount" greater than the available balance
+7. **Swap Preview**: Preview section shows how the balances of both tokens will change after the swap
+8. **Wallet Overview**: Displays current balances of all tokens in the wallet
 
-## Expanding the ESLint configuration
+## 🎨 Non-Functional Requirements
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Dark/Light Theme Support**: Supports both dark and light modes using CSS; modern UI using some components from Radix UI
+2. **Simple & Maintainable Styling**:
+   - Styling is primarily handled with CSS Modules
+   - CSS variables are defined for both themes
+3. **Accurate Arithmetic**:
+   - All calculations with amounts and prices use `BigNumber` to avoid precision loss
+   - Displayed values are limited to 10 decimal places for clarity
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧪 Run Locally
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+```bash
+# Install dependencies
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start development server
+npm run dev
 ```
