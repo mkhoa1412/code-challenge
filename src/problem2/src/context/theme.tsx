@@ -12,16 +12,25 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const curIsDarkMode = localStorage.getItem(THEME_KEY)
-    document.documentElement.setAttribute('data-theme', curIsDarkMode ? 'dark' : 'light')
-    return curIsDarkMode === 'true'
+    const curIsDarkMode = localStorage.getItem(THEME_KEY) === 'true'
+
+    if (curIsDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark')
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light')
+    }
+    return curIsDarkMode
   })
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode((prev) => {
       const newIsDarkMode = !prev
       localStorage.setItem(THEME_KEY, newIsDarkMode.toString())
-      document.documentElement.setAttribute('data-theme', newIsDarkMode ? 'dark' : 'light')
+      if (newIsDarkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark')
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
       return newIsDarkMode
     })
   }, [])

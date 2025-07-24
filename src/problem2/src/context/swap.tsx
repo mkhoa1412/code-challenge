@@ -4,6 +4,7 @@ import { usePricesState } from '@/hooks/prices'
 import { getBigNumber, getPriority, sortTokens, toDecimal } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
 import { createContext, useCallback, useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 
 interface ContextStateType {
   fromToken: string
@@ -191,6 +192,7 @@ const SwapProvider = ({ children }: { children: React.ReactNode }) => {
     },
     onSuccess: () => {
       _swap()
+      toast.success('Swap successfully!')
     },
   })
 

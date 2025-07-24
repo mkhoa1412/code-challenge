@@ -10,6 +10,7 @@ import '@radix-ui/themes/styles.css'
 import './main.css'
 import './reset.css'
 import { ThemeProvider } from './context/theme'
+import { ToastContainer } from 'react-toastify'
 
 const queryClient = new QueryClient()
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <ToastContainer />
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />

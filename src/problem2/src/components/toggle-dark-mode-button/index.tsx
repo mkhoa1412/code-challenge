@@ -5,11 +5,17 @@ import useTheme from '@/hooks/theme'
 import './styles.css'
 
 const Icon = () => {
-  const { toggleDarkMode } = useTheme()
+  const { isDarkMode, toggleDarkMode } = useTheme()
 
   return (
     <div>
-      <input type="checkbox" className="checkbox" id="checkbox" onChange={toggleDarkMode} />
+      <input
+        checked={isDarkMode}
+        type="checkbox"
+        className="checkbox"
+        id="checkbox"
+        onChange={toggleDarkMode}
+      />
       <label htmlFor="checkbox" className="checkbox-label">
         <Sun className="sun" />
         <Moon className="moon" />
