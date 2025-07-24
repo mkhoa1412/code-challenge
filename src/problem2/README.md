@@ -1,7 +1,7 @@
 # 💱 Swap Form Challenge
 
-![Screenshot 1](./screenshot-1.png)
-![Screenshot 2](./screenshot-2.png)
+![Preview 1](./src/problem2/preview/light-mode.png)
+![Preview 2](./src/problem2/preview/dark-mode.png)
 
 ## 📋 Functional Requirements
 
@@ -30,6 +30,7 @@
 3. **Accurate Arithmetic**:
    - All calculations with amounts and prices use `BigNumber` to avoid precision loss
    - Displayed values are limited to 10 decimal places for clarity
+4. **Responsive UI**: Fully responsive layout optimized for both desktop and mobile devices
 
 ## 🧪 Run Locally
 
@@ -40,3 +41,7 @@ npm install
 # Start development server
 npm run dev
 ```
+
+## 🔗 Demo
+
+👉 [Live Demo on Vercel](https://code-challenge-three-wine.vercel.app/)
