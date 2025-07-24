@@ -1,7 +1,7 @@
-# 💱 Swap Form Challenge
+# Swap Form Challenge
 
-![Preview 1](./src/problem2/preview/light-mode.png)
-![Preview 2](./src/problem2/preview/dark-mode.png)
+![Preview 1](/src/problem2/preview/light-mode.png)
+![Preview 2](/src/problem2/preview/dark-mode.png)
 
 ## 📋 Functional Requirements
 
