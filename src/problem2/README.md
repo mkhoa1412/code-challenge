@@ -3,6 +3,10 @@
 ![Preview 1](/src/problem2/preview/light-mode.png)
 ![Preview 2](/src/problem2/preview/dark-mode.png)
 
+## 🔗 Demo
+
+👉 [Live Demo on Vercel](https://code-challenge-three-wine.vercel.app/)
+
 ## 📋 Functional Requirements
 
 1. **Real-time Pricing**: Prices are fetched from the provided API using an interval to keep the latest data updated.
@@ -41,7 +45,3 @@ npm install
 # Start development server
 npm run dev
 ```
-
-## 🔗 Demo
-
-👉 [Live Demo on Vercel](https://code-challenge-three-wine.vercel.app/)
