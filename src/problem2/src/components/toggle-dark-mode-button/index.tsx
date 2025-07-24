@@ -1,30 +1,22 @@
-import { Button } from '@radix-ui/themes'
-import { useEffect, useState } from 'react'
+import Sun from '@/assets/sun.svg?react'
+import Moon from '@/assets/moon.svg?react'
+import useTheme from '@/hooks/theme'
 
-const ToggleDarkModeButton = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const isDarkMode = localStorage.getItem('isDarkMode')
-    return isDarkMode === 'true'
-  })
+import './styles.css'
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const newIsDarkMode = !prev
-      localStorage.setItem('isDarkMode', newIsDarkMode.toString())
-      document.documentElement.setAttribute('data-theme', newIsDarkMode ? 'dark' : 'light') // TODO: remove this
-      return newIsDarkMode
-    })
-  }
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light')
-  }, [isDarkMode])
+const Icon = () => {
+  const { toggleDarkMode } = useTheme()
 
   return (
-    <Button size="1" variant="outline" onClick={toggleDarkMode}>
-      Toggle Dark Mode
-    </Button>
+    <div>
+      <input type="checkbox" className="checkbox" id="checkbox" onChange={toggleDarkMode} />
+      <label htmlFor="checkbox" className="checkbox-label">
+        <Sun className="sun" />
+        <Moon className="moon" />
+        <span className="ball"></span>
+      </label>
+    </div>
   )
 }
 
-export default ToggleDarkModeButton
+export default Icon

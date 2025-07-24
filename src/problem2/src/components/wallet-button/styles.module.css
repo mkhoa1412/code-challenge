@@ -1,24 +1,3 @@
-.selectToken {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  border-radius: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
-
-  &:hover {
-    background-color: var(--color-surface-hover);
-  }
-}
-
-.selectToken svg {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
 .tokenList {
   display: flex;
   flex-direction: column;

@@ -104,3 +104,16 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+.toggleDarkModeButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.toggleDarkModeButton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

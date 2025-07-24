@@ -10,7 +10,8 @@ import { IconArrowsSort } from '@tabler/icons-react'
 import Text from '../text'
 import { getBigNumber } from '@/utils'
 import { useBalancesState } from '@/hooks/balances'
-// import ToggleDarkModeButton from '../toggle-dark-mode-button'
+import ToggleDarkModeButton from '../toggle-dark-mode-button'
+import WalletButton from '../wallet-button'
 
 const Swap = () => {
   const { data: balances } = useBalancesState()
@@ -38,7 +39,16 @@ const Swap = () => {
   return (
     <div className={styles.wrapper}>
       <Container className={styles.wrapperContainer} size="2">
-        {/* <ToggleDarkModeButton /> */}
+        <div className={styles.toggleDarkModeButtonContainer}>
+          <Text as="p" size="5" weight="bold" className={styles.inputLabel} variant="highlight">
+            Swap App
+          </Text>
+
+          <div className={styles.toggleDarkModeButton}>
+            <WalletButton />
+            <ToggleDarkModeButton />
+          </div>
+        </div>
 
         <div className={styles.container}>
           <div className={clsx(styles.inputContainer, styles.inputContainerFrom)}>
