@@ -31,7 +31,7 @@ The Scoreboard API Service is a backend system for managing user scores and prov
 
 ## System Architecture
 
-![Scoreboard Architecture](./scoreboard-service-flow-diagram.png)
+<img width="7826" height="2632" alt="scoreboard-service-flow-diagram" src="https://github.com/user-attachments/assets/1822b003-680e-47db-9fec-e4a0a113f520" />
 
 ---
 
