@@ -101,6 +101,44 @@ sequenceDiagram
 
 ---
 
+## Database Schema
+
+### PostgreSQL Tables
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE scores (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    total_score INTEGER DEFAULT 0 NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id)
+);
+
+CREATE INDEX idx_user_score ON scores(total_score DESC);
+```
+
+### Redis Data Structures
+
+leaderboard:top10 → Sorted Set (ZSET)
+
+- Key: "leaderboard:top10"
+- Score: user's current score
+- Member: user_id:username
+
+rate_limit:user:{user_id} → String with TTL
+
+- Value: number of requests in current window
+- TTL: rate limit window duration
+
+---
+
 ## API Endpoints
 
 ### POST /api/scores/update
@@ -155,34 +193,14 @@ GET /api/leaderboard
 }
 ```
 
----
-
-### POST /api/actions/token
-
-```json
-{
-  "actionType": "level_complete",
-  "expectedScore": 10
-}
-```
-
-**Response**
-
-```json
-{
-  "actionToken": "act_12345_abcdef",
-  "expiresAt": "2025-07-25T10:31:00Z"
-}
-```
-
----
-
 ### WebSocket: /ws/scoreboard
 
 **Connection Header**:  
 `Authorization: Bearer <JWT>`
 
 **Message Types**
+
+**Leaderboard Update (Server → Client):**
 
 ```json
 {
@@ -202,35 +220,16 @@ GET /api/leaderboard
 }
 ```
 
----
+**Score Update Notification (Server → Client):**
 
-## PostgreSQL Schema
-
-```sql
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE scores (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    total_score INTEGER DEFAULT 0 NOT NULL,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id)
-);
-
-CREATE TABLE score_transactions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    score_delta INTEGER NOT NULL,
-    action_type VARCHAR(50) NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    client_ip INET,
-    user_agent TEXT
-);
+```json
+{
+  "userId": 1,
+  "username": "player1",
+  "scoreIncrease": 10,
+  "actionType": "level_complete",
+  "timestamp": "2025-07-25T10:31:00Z"
+}
 ```
 
 ---
@@ -242,22 +241,119 @@ CREATE TABLE score_transactions (
 - Short-lived, one-time tokens in Redis.
 - Used to validate score update authenticity
 
+1. Token Generation: When user initiates an action on frontend, request an action token from /api/actions/token
+2. Token Storage: Store token in Redis with short TTL (60 seconds)
+3. Token Validation: Score update endpoint validates and consumes the token
+4. Token Cleanup: Expired tokens are automatically removed by Redis TTL
+
+```js
+// Token generation endpoint
+POST /api/actions/token
+{
+    "actionType": "level_complete",
+    "expectedScore": 10
+}
+
+// Response includes one-time token
+{
+    "actionToken": "act_12345_67890_abcdef",
+    "expiresAt": "2025-07-25T10:31:00Z"
+}
+```
+
 ### Rate Limiting (in Redis)
 
----
-
-## Message Queue Events
-
-### Event: `score_updated`
+### JWT Authentication
 
 ```json
 {
-  "userId": 1,
+  "userId": 123,
   "username": "player1",
-  "scoreIncrease": 10,
-  "actionType": "level_complete",
-  "timestamp": "2025-07-25T10:31:00Z"
+  "iat": 1690200000,
+  "exp": 1690286400,
+  "scope": ["score:update", "leaderboard:read"]
 }
+```
+
+---
+
+## Service Implementation
+
+### Core Services
+
+#### ScoreService
+
+```javascript
+class ScoreService {
+  async updateScore(userId, scoreIncrease, actionToken, actionType) {
+    // 1. Validate action token
+    // 2. Update database with transaction
+    // 3. Update Redis leaderboard
+    // 4. Broadcast to WebSocket clients
+    // 5. Log transaction for audit
+  }
+
+  async getLeaderboard() {
+    // 1. Check Redis cache first
+    // 2. Fallback to database if cache miss
+    // 3. Update cache with fresh data
+  }
+}
+```
+
+#### LeaderboardService
+
+```javascript
+class LeaderboardService {
+  async updateUserScore(userId, username, newScore) {
+    // 1. Update Redis sorted set
+    // 2. Trim to top 10
+    // 3. Return rank information
+  }
+
+  async getTop10() {
+    // 1. Get from Redis ZSET
+    // 2. Format for API response
+  }
+}
+```
+
+#### WebSocketManager
+
+```javascript
+class WebSocketManager {
+  broadcastLeaderboardUpdate(leaderboard) {
+    // Send to all connected clients
+  }
+
+  notifyScoreUpdate(scoreUpdate) {
+    // Send targeted notifications
+  }
+}
+```
+
+### Middleware Stack
+
+#### Authentication Middleware
+
+```javascript
+const authenticateJWT = (req, res, next) => {
+  // 1. Extract JWT from Authorization header
+  // 2. Verify token signature and expiration
+  // 3. Attach user info to request object
+  // 4. Check required scopes
+};
+```
+
+#### Rate Limiting Middleware
+
+```javascript
+const rateLimitMiddleware = (req, res, next) => {
+  // 1. Check Redis for current rate limit counters
+  // 2. Increment counter with sliding window
+  // 3. Reject if limit exceeded
+  // 4. Add rate limit headers to response
+};
 ```
 
 ---
