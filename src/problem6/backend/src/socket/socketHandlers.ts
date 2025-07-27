@@ -110,20 +110,6 @@ class SocketHandlers {
             updated_at: new Date().toISOString(),
           }
           socket.emit("leaderboard_update", leaderboardData)
-
-          // Send user's current rank if authenticated
-          if (user) {
-            try {
-              const userRank = await scoreService.getUserRank(user.id)
-              const rankData: UserRankUpdateData = {
-                rank: userRank,
-                updated_at: new Date().toISOString(),
-              }
-              socket.emit("user_rank_update", rankData)
-            } catch (error) {
-              console.error("Error getting user rank for socket:", error)
-            }
-          }
         } catch (error) {
           console.error("Error joining leaderboard:", error)
           socket.emit("error", {
@@ -155,38 +141,6 @@ class SocketHandlers {
           console.error("Error getting leaderboard for socket:", error)
           socket.emit("error", {
             message: "Failed to get leaderboard",
-          })
-        }
-      })
-
-      // Handle requesting user rank
-      socket.on("get_user_rank", async (data: SocketAuthData) => {
-        try {
-          if (!data || !data.token) {
-            socket.emit("error", {
-              message: "Authentication required",
-            })
-            return
-          }
-
-          const decoded = verifyToken(data.token)
-          if (!decoded) {
-            socket.emit("error", {
-              message: "Invalid token",
-            })
-            return
-          }
-
-          const userRank = await scoreService.getUserRank(decoded.userId)
-          const rankData: UserRankUpdateData = {
-            rank: userRank,
-            updated_at: new Date().toISOString(),
-          }
-          socket.emit("user_rank_update", rankData)
-        } catch (error) {
-          console.error("Error getting user rank for socket:", error)
-          socket.emit("error", {
-            message: "Failed to get user rank",
           })
         }
       })
@@ -228,14 +182,6 @@ class SocketHandlers {
       updated_at: new Date().toISOString(),
     } as ScoreUpdateData
     this.io.to(`user_${userId}`).emit("score_update", updateData)
-  }
-
-  sendRankUpdate(userId: number, rankData: any): void {
-    const updateData: UserRankUpdateData = {
-      rank: rankData,
-      updated_at: new Date().toISOString(),
-    }
-    this.io.to(`user_${userId}`).emit("user_rank_update", updateData)
   }
 }
 

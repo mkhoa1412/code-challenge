@@ -105,33 +105,6 @@ class ScoreController {
     }
   }
 
-  async getUserRank(req: Request, res: Response): Promise<void> {
-    try {
-      const userId = (req as AuthenticatedRequest).user.id
-      const rank = await scoreService.getUserRank(userId)
-
-      res.status(200).json({
-        success: true,
-        rank,
-      })
-    } catch (error: any) {
-      console.error("Get user rank controller error:", error)
-
-      if (error.message.includes("User not found")) {
-        res.status(404).json({
-          success: false,
-          message: "User not found",
-        })
-        return
-      }
-
-      res.status(500).json({
-        success: false,
-        message: "Failed to retrieve user rank",
-      })
-    }
-  }
-
   async getUserActionHistory(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as AuthenticatedRequest).user.id

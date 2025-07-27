@@ -126,39 +126,6 @@ class ScoreService {
     }
   }
 
-  async getUserRank(userId: number): Promise<UserRank> {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-      })
-      if (!user) {
-        throw new Error("User not found")
-      }
-
-      // Get user's rank by counting users with higher scores
-      const higherScoreCount = await prisma.user.count({
-        where: {
-          OR: [
-            { score: { gt: user.score } },
-            {
-              AND: [{ score: user.score }, { createdAt: { lt: user.createdAt } }],
-            },
-          ],
-        },
-      })
-
-      return {
-        user_id: userId,
-        username: user.username,
-        score: user.score,
-        rank: higherScoreCount + 1,
-      }
-    } catch (error) {
-      console.error("Get user rank error:", error)
-      throw error
-    }
-  }
-
   async getUserActionHistory(userId: number, limit: number = 10): Promise<UserAction[]> {
     try {
       const actions = await prisma.userAction.findMany({

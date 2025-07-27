@@ -17,7 +17,7 @@ docker-compose up -d db redis
 yarn dev
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication
 
@@ -48,13 +48,11 @@ yarn dev
 - `join_leaderboard`: Join leaderboard room for real-time updates
 - `leave_leaderboard`: Leave leaderboard room
 - `get_leaderboard`: Request current leaderboard
-- `get_user_rank`: Request user's current rank
 
 ### Server → Client
 
 - `leaderboard_update` - Broadcast leaderboard changes
 - `score_update` - Personal score update
-- `user_rank_update` - User rank update
 
 ## 🔧 Configuration
 
@@ -74,7 +72,7 @@ NODE_ENV=development
 - **Redis**: Port 6379
 - **API Server**: Port 3000
 
-## 🛡️ Security Features
+## Security Features
 
 - JWT-based authentication
 - Password hashing with bcrypt
@@ -83,7 +81,7 @@ NODE_ENV=development
 - CORS protection
 - Helmet security headers
 
-## 🚀 Production Deployment
+## Production Deployment
 
 ### Using Docker Compose
 
@@ -98,7 +96,7 @@ docker-compose up -d
 2. Update production values (JWT_SECRET, database credentials)
 3. Set `NODE_ENV=production`
 
-## 📊 Monitoring
+## Monitoring
 
 ### Health Check
 

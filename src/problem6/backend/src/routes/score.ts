@@ -11,9 +11,6 @@ router.use(authenticateToken)
 // POST /api/score/action
 router.post("/action", validate(actionSchema), scoreController.executeAction)
 
-// GET /api/score/rank
-router.get("/rank", scoreController.getUserRank)
-
 // GET /api/score/history
 router.get("/history", scoreController.getUserActionHistory)
 
