@@ -89,21 +89,6 @@ class App {
     this.app.use("/api/score", scoreRoutes)
     this.app.use("/api/leaderboard", leaderboardRoutes)
 
-    // Root endpoint
-    this.app.get("/", (req: Request, res: Response) => {
-      res.status(200).json({
-        success: true,
-        message: "Live Scoreboard API Service",
-        version: "1.0.0",
-        endpoints: {
-          auth: "/api/auth",
-          score: "/api/score",
-          leaderboard: "/api/leaderboard",
-          health: "/health",
-        },
-      })
-    })
-
     // 404 handler
     this.app.use("*", (req: Request, res: Response) => {
       res.status(404).json({

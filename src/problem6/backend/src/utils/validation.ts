@@ -1,70 +1,45 @@
-import Joi from "joi"
+import { z } from "zod"
 import { Request, Response, NextFunction } from "express"
 import { ValidationError, ValidatedRequest } from "../types"
 
 // User registration validation
-const registerSchema = Joi.object({
-  email: Joi.string().email().required().messages({
-    "string.email": "Please provide a valid email address",
-    "any.required": "Email is required",
-  }),
-  password: Joi.string().min(6).required().messages({
-    "string.min": "Password must be at least 6 characters long",
-    "any.required": "Password is required",
-  }),
-  username: Joi.string().min(3).max(50).alphanum().required().messages({
-    "string.min": "Username must be at least 3 characters long",
-    "string.max": "Username cannot exceed 50 characters",
-    "string.alphanum": "Username can only contain letters and numbers",
-    "any.required": "Username is required",
-  }),
+const registerSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Please provide a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+  username: z.string()
+    .min(3, "Username must be at least 3 characters long")
+    .max(50, "Username cannot exceed 50 characters")
+    .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters and numbers"),
 })
 
 // User login validation
-const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
-    "string.email": "Please provide a valid email address",
-    "any.required": "Email is required",
-  }),
-  password: Joi.string().required().messages({
-    "any.required": "Password is required",
-  }),
+const loginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Please provide a valid email address"),
+  password: z.string().min(1, "Password is required"),
 })
 
 // Math action validation
-const actionSchema = Joi.object({
-  action: Joi.string().valid("plus", "minus").required().messages({
-    "any.only": 'Action must be either "plus" or "minus"',
-    "any.required": "Action is required",
-  }),
-  operand1: Joi.number().integer().min(-1000).max(1000).required().messages({
-    "number.base": "Operand1 must be a number",
-    "number.integer": "Operand1 must be an integer",
-    "number.min": "Operand1 must be at least -1000",
-    "number.max": "Operand1 cannot exceed 1000",
-    "any.required": "Operand1 is required",
-  }),
-  operand2: Joi.number().integer().min(-1000).max(1000).required().messages({
-    "number.base": "Operand2 must be a number",
-    "number.integer": "Operand2 must be an integer",
-    "number.min": "Operand2 must be at least -1000",
-    "number.max": "Operand2 cannot exceed 1000",
-    "any.required": "Operand2 is required",
-  }),
+const actionSchema = z.object({
+  action: z.enum(["plus", "minus"]),
+  operand1: z.number()
+    .int("Operand1 must be an integer")
+    .min(-1000, "Operand1 must be at least -1000")
+    .max(1000, "Operand1 cannot exceed 1000"),
+  operand2: z.number()
+    .int("Operand2 must be an integer")
+    .min(-1000, "Operand2 must be at least -1000")
+    .max(1000, "Operand2 cannot exceed 1000"),
 })
 
 // Validation middleware factory
-const validate = (schema: Joi.ObjectSchema) => {
+const validate = (schema: z.ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const { error, value } = schema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    })
+    const result = schema.safeParse(req.body)
 
-    if (error) {
-      const errors: ValidationError[] = error.details.map((detail) => ({
-        field: detail.path.join("."),
-        message: detail.message,
+    if (!result.success) {
+      const errors: ValidationError[] = result.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
       }))
 
       res.status(400).json({
@@ -75,7 +50,7 @@ const validate = (schema: Joi.ObjectSchema) => {
       return
     }
 
-    ;(req as ValidatedRequest).validatedData = value
+    ;(req as ValidatedRequest).validatedData = result.data
     next()
   }
 }
