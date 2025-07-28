@@ -36,8 +36,13 @@ class App {
     this.server = http.createServer(this.app)
     this.io = new Server(this.server, {
       cors: {
-        origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+        origin: [
+          process.env.CORS_ORIGIN || "http://localhost:3001",
+          "http://localhost:3000",
+          "http://localhost:3001",
+        ],
         methods: ["GET", "POST"],
+        credentials: true,
       },
     })
 
@@ -45,6 +50,8 @@ class App {
     this.setupMiddleware()
     this.setupRoutes()
     this.setupErrorHandling()
+    const socketHandler = new SocketHandlers(this.io)
+    this.app.set("socketHandler", socketHandler)
   }
 
   private setupMiddleware(): void {
@@ -54,7 +61,12 @@ class App {
     // CORS configuration
     this.app.use(
       cors({
-        origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+        origin: [
+          process.env.CORS_ORIGIN || "http://localhost:3001",
+          "http://localhost:3000",
+          "http://localhost:3001",
+        ],
+        methods: ["GET", "POST"],
         credentials: true,
       }),
     )

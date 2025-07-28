@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import { Application } from "express"
-import { Server } from "socket.io"
 import { AuthenticatedRequest, ValidatedRequest, MathAction } from "../types"
 import scoreService from "../services/scoreService"
 
@@ -35,21 +34,21 @@ class ScoreController {
         expectedResult,
       )
 
-      const io: Server = (req.app as Application).get("io")
-      if (io) {
+      const socketHandler = (req.app as Application).get("socketHandler")
+
+      if (socketHandler) {
         // Always get and broadcast updated leaderboard to all connected clients
         // This ensures real-time updates for everyone when any user scores
         const leaderboard = await scoreService.getLeaderboard()
 
         // Broadcast leaderboard update to ALL clients in leaderboard room
-        io.to("leaderboard").emit("leaderboard_update", {
+        socketHandler.sendLeaderboardUpdate({
           leaderboard,
           updated_at: new Date().toISOString(),
-          triggered_by: userId, // Optional: let clients know who triggered the update
+          triggered_by: userId,
         })
 
-        // Emit personal score update to the specific user
-        io.to(`user_${userId}`).emit("score_update", {
+        socketHandler.sendScoreUpdate(userId, {
           new_score: result.new_score,
           points_earned: result.points_earned,
           updated_at: new Date().toISOString(),
@@ -72,14 +71,6 @@ class ScoreController {
         res.status(400).json({
           success: false,
           message: "Invalid math operation result",
-        })
-        return
-      }
-
-      if (error.message.includes("Too many actions")) {
-        res.status(429).json({
-          success: false,
-          message: error.message,
         })
         return
       }

@@ -229,28 +229,6 @@ flowchart TD
 
 ### Socket.io Events
 
-#### Client → Server Events
-
-##### 1. Join Leaderboard Room
-- **Event:** `join_leaderboard`
-- **Purpose:** Subscribe to real-time leaderboard updates
-- **Payload:** None
-
-##### 2. Leave Leaderboard Room
-- **Event:** `leave_leaderboard`
-- **Purpose:** Unsubscribe from leaderboard updates
-- **Payload:** None
-
-##### 3. Request Current Leaderboard
-- **Event:** `get_leaderboard`
-- **Purpose:** Get current leaderboard state
-- **Payload:**
-```json
-{
-  "limit": 10
-}
-```
-
 #### Server → Client Events
 
 ##### 1. Leaderboard Update
@@ -323,4 +301,3 @@ flowchart TD
 - **Authentication:** JWT tokens validated on connection
 - **Graceful Disconnection:** Automatic cleanup of user sessions
 - **Reconnection:** Clients automatically rejoin appropriate rooms on reconnect
-  

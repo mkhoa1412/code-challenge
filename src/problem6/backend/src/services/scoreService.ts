@@ -1,4 +1,4 @@
-import { ActionResult, LeaderboardEntry, UserRank, UserAction, MathProblem } from "../types"
+import { ActionResult, LeaderboardEntry, UserAction, MathProblem } from "../types"
 import prisma from "../utils/prisma"
 import redisClient from "../utils/redis"
 import { validateMathOperation } from "../utils/validation"
@@ -31,12 +31,8 @@ class ScoreService {
 
       // Get current user data and update score in a transaction
       const result = await prisma.$transaction(async (tx) => {
-        const user = await tx.user.findUnique({
-          where: { id: userId },
-        })
-        if (!user) {
-          throw new Error("User not found")
-        }
+        const user = await tx.user.findUnique({ where: { id: userId } })
+        if (!user) throw new Error("User not found")
 
         // Calculate new score (each correct action adds 1 point)
         const pointsEarned = 1
@@ -129,12 +125,8 @@ class ScoreService {
   async getUserActionHistory(userId: number, limit: number = 10): Promise<UserAction[]> {
     try {
       const actions = await prisma.userAction.findMany({
-        where: {
-          userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+        where: { userId },
+        orderBy: { createdAt: "desc" },
         take: limit,
       })
 
@@ -167,7 +159,7 @@ class ScoreService {
       action,
       operand1,
       operand2,
-      expected_result: 0, // placeholder, should hide the result
+      expected_result: result,
       problem_text: `${operand1} ${action === "plus" ? "+" : "-"} ${operand2} = ?`,
     }
   }
