@@ -36,9 +36,27 @@ function sum_to_n_b(n) {
  return sum;
 }
 
+/**
+ * Approach 3: Recursive
+ *
+ * Uses recursion to calculate the sum by breaking down the problem
+ *
+ * @param {number} n - The upper bound integer (inclusive)
+ * @returns {number} The sum of integers from 1 to n
+ */
+function sum_to_n_c(n) {
+  // Base cases
+  if (n < 0) return 0;
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+
+  return n + sum_to_n_c(n - 1);
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         sum_to_n_a,
-        sum_to_n_b
+        sum_to_n_b,
+        sum_to_n_c
     };
 }

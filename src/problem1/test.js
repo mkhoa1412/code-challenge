@@ -3,12 +3,13 @@
  *
  */
 
-let sum_to_n_a, sum_to_n_b;
+let sum_to_n_a, sum_to_n_b, sum_to_n_c;
 
 if (typeof require !== 'undefined') {
     const functions = require('./sum_to_n.js');
     sum_to_n_a = functions.sum_to_n_a;
     sum_to_n_b = functions.sum_to_n_b;
+    sum_to_n_c = functions.sum_to_n_c;
 }
 
 /**
@@ -66,6 +67,8 @@ class TestRunner {
                 `sum_to_n_a(${input})`);
             this.assertEqual(sum_to_n_b(input), expected,
                 `sum_to_n_b(${input})`);
+            this.assertEqual(sum_to_n_c(input), expected,
+                `sum_to_n_c(${input})`);
         });
 
         console.log('');
@@ -75,11 +78,16 @@ class TestRunner {
         console.log('🔍 Testing Edge Cases:');
 
         this.assertEqual(sum_to_n_a(0), 0, 'sum_to_n_a(0)');
-        this.assertEqual(sum_to_n_b(0), 0, 'sum_to_n_b(0)');
         this.assertEqual(sum_to_n_a(-1), 0, 'sum_to_n_a(-1)');
-        this.assertEqual(sum_to_n_b(-1), 0, 'sum_to_n_b(-1)');
         this.assertEqual(sum_to_n_a(-10), 0, 'sum_to_n_a(-10)');
+
+        this.assertEqual(sum_to_n_b(0), 0, 'sum_to_n_b(0)');
+        this.assertEqual(sum_to_n_b(-1), 0, 'sum_to_n_b(-1)');
         this.assertEqual(sum_to_n_b(-10), 0, 'sum_to_n_b(-10)');
+
+        this.assertEqual(sum_to_n_c(0), 0, 'sum_to_n_c(0)');
+        this.assertEqual(sum_to_n_c(-1), 0, 'sum_to_n_c(-1)');
+        this.assertEqual(sum_to_n_c(-10), 0, 'sum_to_n_c(-10)');
 
         console.log('');
     }
@@ -96,6 +104,15 @@ class TestRunner {
                 `sum_to_n_a(${n})`);
             this.assertEqual(sum_to_n_b(n), expected,
                 `sum_to_n_b(${n})`);
+
+            // Skip recursive test for very large numbers to avoid stack overflow
+            if (n <= 1000) {
+                this.assertEqual(sum_to_n_c(n), expected,
+                    `sum_to_n_c(${n})`);
+            } else {
+                console.log(`⚠️  SKIP: sum_to_n_c(${n}) - Stack overflow risk`);
+            }
+
         });
 
         console.log('');
@@ -121,10 +138,19 @@ class TestRunner {
         }
         const timeB = performance.now() - startB;
 
-        console.log(`Formula approach (n=${n}): ${timeA.toFixed(2)}ms`);
-        console.log(`Iterative approach (n=${n}): ${timeB.toFixed(2)}ms`);
+         // Test recursive approach (smaller n to avoid stack overflow)
+         const smallN = 1000;
+         const startC = performance.now();
+         for (let i = 0; i < iterations; i++) {
+             sum_to_n_c(smallN);
+         }
+         const timeC = performance.now() - startC;
 
-        console.log('');
+         console.log(`Formula approach (n=${n}): ${timeA.toFixed(2)}ms`);
+         console.log(`Iterative approach (n=${n}): ${timeB.toFixed(2)}ms`);
+         console.log(`Recursive approach (n=${smallN}): ${timeC.toFixed(2)}ms`);
+
+         console.log('');
     }
 
     printSummary() {

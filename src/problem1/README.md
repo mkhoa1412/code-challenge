@@ -20,8 +20,8 @@ function sum_to_n(n) → number
 
 **Algorithm:** Uses the arithmetic series formula: `n × (n + 1) ÷ 2`
 
-**Time Complexity: O(1) - Constant time
-**Space Complexity: O(1) - Constant space
+**Time Complexity: O(1) - Constant time**
+**Space Complexity: O(1) - Constant space**
 
 **Characteristics:**
 - ✅ Most efficient approach
@@ -42,8 +42,8 @@ S = n × (n + 1) / 2
 
 **Algorithm:** Uses a for loop to accumulate the sum from 1 to n
 
-**Time Complexity: O(n) - Linear time
-**Space Complexity: O(1) - Constant space
+**Time Complexity: O(n) - Linear time**
+**Space Complexity: O(1) - Constant space**
 
 **Characteristics:**
 - ✅ Simple and intuitive
@@ -62,12 +62,35 @@ for (let i = 1; i <= n; i++) {
 return sum;
 ```
 
+### Approach 3: Recursive (`sum_to_n_c`)
+
+**Algorithm:** Uses recursion with the relation: `sum(n) = n + sum(n-1)`
+
+**Time Complexity: O(n) - Linear time (n recursive calls)**
+**Space Complexity: O(n) - Linear space (call stack depth)**
+
+**Characteristics:**
+- ✅ Elegant mathematical representation
+- ✅ Demonstrates divide-and-conquer thinking
+- ✅ Good for understanding recursion
+- ❌ Risk of stack overflow for large n
+- ❌ Function call overhead
+- ❌ Highest memory usage
+
+**Recursive Relation:**
+```
+sum(n) = n + sum(n-1)
+sum(1) = 1 (base case)
+sum(0) = 0 (base case)
+```
+
 ## Performance Comparison
 
 | Approach | Time Complexity | Space Complexity | Best Use Case |
 |----------|----------------|------------------|---------------|
 | Formula  | O(1)           | O(1)             | Production code, large n |
 | Iterative| O(n)           | O(1)             | Educational, debugging |
+| Recursive| O(n)           | O(n)             | Learning recursion, small n |
 
 
 
@@ -86,10 +109,11 @@ src/problem1/
 ### Node.js Environment
 
 ```javascript
-const { sum_to_n_a, sum_to_n_b } = require('./sum_to_n.js');
+const { sum_to_n_a, sum_to_n_b, sum_to_n_c } = require('./sum_to_n.js');
 
 console.log(sum_to_n_a(5));  // 15
 console.log(sum_to_n_b(5));  // 15
+console.log(sum_to_n_c(5));  // 15
 
 ```
 
@@ -100,6 +124,7 @@ console.log(sum_to_n_b(5));  // 15
 <script>
     console.log(sum_to_n_a(5));  // 15
     console.log(sum_to_n_b(5));  // 15
+    console.log(sum_to_n_c(5));  // 15
 </script>
 ```
 
