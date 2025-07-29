@@ -3,11 +3,12 @@
  *
  */
 
-let sum_to_n_a;
+let sum_to_n_a, sum_to_n_b;
 
 if (typeof require !== 'undefined') {
     const functions = require('./sum_to_n.js');
     sum_to_n_a = functions.sum_to_n_a;
+    sum_to_n_b = functions.sum_to_n_b;
 }
 
 /**
@@ -63,6 +64,8 @@ class TestRunner {
         testCases.forEach(({ input, expected }) => {
             this.assertEqual(sum_to_n_a(input), expected,
                 `sum_to_n_a(${input})`);
+            this.assertEqual(sum_to_n_b(input), expected,
+                `sum_to_n_b(${input})`);
         });
 
         console.log('');
@@ -72,10 +75,13 @@ class TestRunner {
         console.log('🔍 Testing Edge Cases:');
 
         this.assertEqual(sum_to_n_a(0), 0, 'sum_to_n_a(0)');
-
+        this.assertEqual(sum_to_n_b(0), 0, 'sum_to_n_b(0)');
         this.assertEqual(sum_to_n_a(-1), 0, 'sum_to_n_a(-1)');
-
+        this.assertEqual(sum_to_n_b(-1), 0, 'sum_to_n_b(-1)');
         this.assertEqual(sum_to_n_a(-10), 0, 'sum_to_n_a(-10)');
+        this.assertEqual(sum_to_n_b(-10), 0, 'sum_to_n_b(-10)');
+
+        console.log('');
     }
 
     testLargeCases() {
@@ -88,7 +94,11 @@ class TestRunner {
 
             this.assertEqual(sum_to_n_a(n), expected,
                 `sum_to_n_a(${n})`);
+            this.assertEqual(sum_to_n_b(n), expected,
+                `sum_to_n_b(${n})`);
         });
+
+        console.log('');
     }
 
     testPerformance() {
@@ -104,7 +114,17 @@ class TestRunner {
         }
         const timeA = performance.now() - startA;
 
+        // Test iterative approach
+        const startB = performance.now();
+        for (let i = 0; i < iterations; i++) {
+            sum_to_n_b(n);
+        }
+        const timeB = performance.now() - startB;
+
         console.log(`Formula approach (n=${n}): ${timeA.toFixed(2)}ms`);
+        console.log(`Iterative approach (n=${n}): ${timeB.toFixed(2)}ms`);
+
+        console.log('');
     }
 
     printSummary() {

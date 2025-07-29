@@ -20,8 +20,8 @@ function sum_to_n(n) → number
 
 **Algorithm:** Uses the arithmetic series formula: `n × (n + 1) ÷ 2`
 
-**Time Complexity:** O(1) - Constant time
-**Space Complexity:** O(1) - Constant space
+**Time Complexity: O(1) - Constant time
+**Space Complexity: O(1) - Constant space
 
 **Characteristics:**
 - ✅ Most efficient approach
@@ -38,11 +38,37 @@ S = n/2 × (1 + n)
 S = n × (n + 1) / 2
 ```
 
+### Approach 2: Iterative Loop (`sum_to_n_b`)
+
+**Algorithm:** Uses a for loop to accumulate the sum from 1 to n
+
+**Time Complexity: O(n) - Linear time
+**Space Complexity: O(1) - Constant space
+
+**Characteristics:**
+- ✅ Simple and intuitive
+- ✅ Easy to understand and debug
+- ✅ Good for educational purposes
+- ✅ Handles edge cases naturally
+- ❌ More operations than formula approach
+- ✅ Safe from overflow until final result
+
+**Implementation Pattern:**
+```javascript
+let sum = 0;
+for (let i = 1; i <= n; i++) {
+    sum += i;
+}
+return sum;
+```
+
 ## Performance Comparison
 
 | Approach | Time Complexity | Space Complexity | Best Use Case |
 |----------|----------------|------------------|---------------|
 | Formula  | O(1)           | O(1)             | Production code, large n |
+| Iterative| O(n)           | O(1)             | Educational, debugging |
+
 
 
 ## Files Structure
@@ -60,9 +86,11 @@ src/problem1/
 ### Node.js Environment
 
 ```javascript
-const { sum_to_n_a } = require('./sum_to_n.js');
+const { sum_to_n_a, sum_to_n_b } = require('./sum_to_n.js');
 
 console.log(sum_to_n_a(5));  // 15
+console.log(sum_to_n_b(5));  // 15
+
 ```
 
 ### Browser Environment
@@ -71,6 +99,7 @@ console.log(sum_to_n_a(5));  // 15
 <script src="sum_to_n.js"></script>
 <script>
     console.log(sum_to_n_a(5));  // 15
+    console.log(sum_to_n_b(5));  // 15
 </script>
 ```
 
