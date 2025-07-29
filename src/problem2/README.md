@@ -44,6 +44,15 @@ npm run build
 
 # Preview production build
 npm run preview
+
+# Run tests in watch mode
+npm run test
+
+# Run tests once
+npm run test:run
+
+# Run tests with UI
+npm run test:ui
 ```
 
 ## Usage

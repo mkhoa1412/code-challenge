@@ -6,9 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "vite": "^7.0.4"
+    "@vitest/ui": "^2.1.9",
+    "jsdom": "^25.0.1",
+    "vite": "^7.0.4",
+    "vitest": "^2.1.9"
   }
 }
