@@ -1,15 +1,32 @@
 const API_BASE_URL = 'https://interview.switcheo.com';
 const ICON_BASE_URL = 'https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens';
 
-export async function fetchTokenPrices() {
+// Type definitions
+export interface TokenPrice {
+  price: string;
+  currency: string;
+}
+
+export interface PriceMap {
+  [currency: string]: number;
+}
+
+export interface Token {
+  symbol: string;
+  price: number;
+  hasIcon: boolean;
+  iconUrl: string;
+}
+
+export async function fetchTokenPrices(): Promise<PriceMap> {
   try {
     const response = await fetch(`${API_BASE_URL}/prices.json`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const prices = await response.json();
+    const prices: TokenPrice[] = await response.json();
 
-    const priceMap = {};
+    const priceMap: PriceMap = {};
     prices.forEach(token => {
       if (token.price && token.currency && parseFloat(token.price) > 0 && !isNaN(parseFloat(token.price))) {
         priceMap[token.currency] = parseFloat(token.price);
@@ -23,11 +40,11 @@ export async function fetchTokenPrices() {
   }
 }
 
-export function getTokenIconUrl(symbol) {
+export function getTokenIconUrl(symbol: string): string {
   return `${ICON_BASE_URL}/${symbol.toUpperCase()}.svg`;
 }
 
-export async function validateTokenIcon(symbol) {
+export async function validateTokenIcon(symbol: string): Promise<boolean> {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => resolve(true);
@@ -36,10 +53,10 @@ export async function validateTokenIcon(symbol) {
   });
 }
 
-export async function getAvailableTokens() {
+export async function getAvailableTokens(): Promise<Token[]> {
   try {
     const prices = await fetchTokenPrices();
-    const tokens = [];
+    const tokens: Token[] = [];
 
     for (const [symbol, price] of Object.entries(prices)) {
       const hasIcon = await validateTokenIcon(symbol);
@@ -58,12 +75,12 @@ export async function getAvailableTokens() {
   }
 }
 
-export function calculateExchange(fromPrice, toPrice, amount) {
+export function calculateExchange(fromPrice: number, toPrice: number, amount: number): number {
   if (!fromPrice || !toPrice || !amount) return 0;
   return (amount * fromPrice) / toPrice;
 }
 
-export function formatNumber(value, decimals = 6) {
-  if (!value || isNaN(value)) return '0';
-  return parseFloat(value).toFixed(decimals);
+export function formatNumber(value: number | string, decimals: number = 6): string {
+  if (value === null || value === undefined || isNaN(Number(value))) return '0';
+  return parseFloat(String(value)).toFixed(decimals);
 }
