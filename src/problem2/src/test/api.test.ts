@@ -140,13 +140,13 @@ describe('API Functions', () => {
   });
 
   describe('getAvailableTokens', () => {
-    it('should return tokens with icon validation', async () => {
+    it('should return only tokens with valid icons', async () => {
       const mockResponse: MockResponse = {
         ok: true,
         json: async () => [
           { currency: 'USDC', price: '1.0' },
           { currency: 'ETH', price: '2500' },
-          { currency: 'INVALID', price: '100' },
+          { currency: 'INVALID', price: '100' }, // This will be filtered out since it has no icon
         ],
       };
 
@@ -154,7 +154,7 @@ describe('API Functions', () => {
 
       const result: Token[] = await getAvailableTokens();
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(2);
       expect(result[0]).toMatchObject({
         symbol: 'ETH',
         price: 2500,
@@ -162,12 +162,6 @@ describe('API Functions', () => {
         iconUrl: 'https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/ETH.svg'
       });
       expect(result[1]).toMatchObject({
-        symbol: 'INVALID',
-        price: 100,
-        hasIcon: false,
-        iconUrl: 'https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/INVALID.svg'
-      });
-      expect(result[2]).toMatchObject({
         symbol: 'USDC',
         price: 1,
         hasIcon: true,
@@ -175,13 +169,13 @@ describe('API Functions', () => {
       });
     });
 
-    it('should sort tokens alphabetically', async () => {
+    it('should filter out all tokens without icons', async () => {
       const mockResponse: MockResponse = {
         ok: true,
         json: async () => [
-          { currency: 'ZZZ', price: '1.0' },
-          { currency: 'AAA', price: '2.0' },
-          { currency: 'MMM', price: '3.0' },
+          { currency: 'INVALID', price: '100' },
+          { currency: 'NONEXISTENT', price: '200' },
+          { currency: 'FAKE', price: '300' },
         ],
       };
 
@@ -189,7 +183,28 @@ describe('API Functions', () => {
 
       const result: Token[] = await getAvailableTokens();
 
-      expect(result.map(t => t.symbol)).toEqual(['AAA', 'MMM', 'ZZZ']);
+      // All tokens should be filtered out since none have valid icons
+      expect(result).toHaveLength(0);
+    });
+
+    it('should sort tokens alphabetically (only tokens with icons)', async () => {
+      const mockResponse: MockResponse = {
+        ok: true,
+        json: async () => [
+          { currency: 'ETH', price: '2500' },
+          { currency: 'BTC', price: '45000' },
+          { currency: 'USDC', price: '1.0' },
+          { currency: 'INVALID', price: '100' }, // This will be filtered out
+        ],
+      };
+
+      (globalThis.fetch as any).mockResolvedValueOnce(mockResponse);
+
+      const result: Token[] = await getAvailableTokens();
+
+      // Should return only BTC, ETH, USDC (alphabetically sorted, INVALID filtered out)
+      expect(result).toHaveLength(3);
+      expect(result.map(t => t.symbol)).toEqual(['BTC', 'ETH', 'USDC']);
     });
 
     it('should handle API errors', async () => {

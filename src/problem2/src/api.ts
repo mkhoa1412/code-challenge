@@ -60,12 +60,15 @@ export async function getAvailableTokens(): Promise<Token[]> {
 
     for (const [symbol, price] of Object.entries(prices)) {
       const hasIcon = await validateTokenIcon(symbol);
-      tokens.push({
-        symbol: symbol.toUpperCase(),
-        price,
-        hasIcon,
-        iconUrl: getTokenIconUrl(symbol)
-      });
+      // Only include tokens that have valid icons
+      if (hasIcon) {
+        tokens.push({
+          symbol: symbol.toUpperCase(),
+          price,
+          hasIcon,
+          iconUrl: getTokenIconUrl(symbol)
+        });
+      }
     }
 
     return tokens.sort((a, b) => a.symbol.localeCompare(b.symbol));
