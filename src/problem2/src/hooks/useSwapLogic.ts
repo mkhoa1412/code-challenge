@@ -1,8 +1,10 @@
 import { useState, useCallback } from 'react'
 import { Token, calculateExchange, formatNumber } from '../api'
+import { validateSwapForm, validateAmount, validateTokenSelection, validateTokenPair, SwapFormData } from '../utils/validation'
 
 interface UseSwapLogicProps {
   tokens: Token[]
+  onValidationError?: (errors: any[]) => void
 }
 
 interface UseSwapLogicReturn {
@@ -16,25 +18,22 @@ interface UseSwapLogicReturn {
   handleFromAmountChange: (value: string) => void
   handleToAmountChange: (value: string) => void
   handleSwapTokens: () => void
-  handleSwapTransaction: () => Promise<void>
+  handleSwapTransaction: () => Promise<{ success: boolean; errors?: any[] }>
   getExchangeRate: () => string
   getTokenBySymbol: (symbol: string) => Token | undefined
+  validateForm: () => { isValid: boolean; errors: any[] }
+  validateAmountField: (amount: string) => string | null
+  validateFromToken: () => string | null
+  validateToToken: () => string | null
+  validateTokenPairSelection: () => string | null
 }
 
-export const useSwapLogic = ({ tokens }: UseSwapLogicProps): UseSwapLogicReturn => {
+export const useSwapLogic = ({ tokens, onValidationError }: UseSwapLogicProps): UseSwapLogicReturn => {
   const [fromToken, setFromToken] = useState<string>('')
   const [toToken, setToToken] = useState<string>('')
   const [fromAmount, setFromAmount] = useState<string>('')
   const [toAmount, setToAmount] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  // Set default tokens when tokens are loaded
-  useState(() => {
-    if (tokens.length >= 2 && !fromToken && !toToken) {
-      setFromToken(tokens[0].symbol)
-      setToToken(tokens[1].symbol)
-    }
-  })
 
   const getTokenBySymbol = useCallback((symbol: string): Token | undefined => {
     return tokens.find(token => token.symbol === symbol)
@@ -89,27 +88,64 @@ export const useSwapLogic = ({ tokens }: UseSwapLogicProps): UseSwapLogicReturn 
     }
   }, [fromAmount, fromToken, calculateTokenExchange])
 
-  const handleSwapTransaction = useCallback(async () => {
-    if (!fromAmount || !toAmount) {
-      alert('Please enter an amount to swap')
-      return
+  // Validation methods
+  const validateAmountField = useCallback((amount: string): string | null => {
+    return validateAmount(amount)
+  }, [])
+
+  const validateFromToken = useCallback((): string | null => {
+    return validateTokenSelection(fromToken, 'from')
+  }, [fromToken])
+
+  const validateToToken = useCallback((): string | null => {
+    return validateTokenSelection(toToken, 'to')
+  }, [toToken])
+
+  const validateTokenPairSelection = useCallback((): string | null => {
+    return validateTokenPair(fromToken, toToken)
+  }, [fromToken, toToken])
+
+  const validateForm = useCallback(() => {
+    const formData: SwapFormData = {
+      fromToken,
+      toToken,
+      fromAmount,
+      toAmount
     }
 
-    if (!fromToken || !toToken) {
-      alert('Please select both tokens')
-      return
+    return validateSwapForm(formData)
+  }, [fromToken, toToken, fromAmount, toAmount])
+
+  const handleSwapTransaction = useCallback(async (): Promise<{ success: boolean; errors?: any[] }> => {
+    const validation = validateForm()
+
+    if (!validation.isValid) {
+      if (onValidationError) {
+        onValidationError(validation.errors)
+      }
+      return { success: false, errors: validation.errors }
     }
 
     setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      alert(`Successfully swapped ${fromAmount} ${fromToken} to ${toAmount} ${toToken}`)
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      // Reset form on success
       setFromAmount('')
       setToAmount('')
+
+      return { success: true }
+    } catch (error) {
+      return {
+        success: false,
+        errors: [{ field: 'general', message: 'Transaction failed. Please try again.' }]
+      }
+    } finally {
       setIsLoading(false)
-    }, 1500)
-  }, [fromAmount, toAmount, fromToken, toToken])
+    }
+  }, [validateForm, onValidationError, fromAmount, fromToken, toAmount, toToken])
 
   const getExchangeRate = useCallback(() => {
     if (!fromToken || !toToken || fromToken === toToken) return '1.00'
@@ -136,6 +172,11 @@ export const useSwapLogic = ({ tokens }: UseSwapLogicProps): UseSwapLogicReturn 
     handleSwapTokens,
     handleSwapTransaction,
     getExchangeRate,
-    getTokenBySymbol
+    getTokenBySymbol,
+    validateForm,
+    validateAmountField,
+    validateFromToken,
+    validateToToken,
+    validateTokenPairSelection
   }
 }
