@@ -1,27 +1,44 @@
-# Currency Swap Form
+# Token Swap Application
 
-A modern, interactive currency swap form, featuring real-time exchange rates and token selection with full type safety.
+A modern React-based token swap form, fetching real-time token prices from Switcheo API.
 
 ## Features
 
-- **Real-time Token Prices**: Fetches current token prices from Switcheo API with TypeScript interfaces
-- **Token Selection**: Dropdown with token icons and names (fully typed)
-- **Live Exchange Rate Calculation**: Automatic conversion between selected tokens with type safety
-- **Input Validation**: Error handling and user feedback with proper TypeScript error types
-- **Responsive Design**: Modern UI that works on all devices
-- **Token Icons**: High-quality SVG icons from Switcheo token repository
-- **Type Safety**: Full TypeScript coverage for better development experience and fewer runtime errors
-- **Comprehensive Testing**: Complete test suite with TypeScript support and type-safe mocks
+- **Real-time Token Prices**: Fetches current token prices from Switcheo API
+- **Dynamic Token Selection**: Automatically loads available tokens with their current prices
+- **Token Icons**: Displays token icons from Switcheo's token repository
+- **Bidirectional Input**: Enter amounts in either token field and see automatic conversion
+- **Token Swapping**: Quick swap button to flip tokens with a smooth animation
+- **Live Exchange Rates**: Displays current exchange rate between selected tokens
+- **Responsive Design**: Works seamlessly on desktop and mobile devices with Tailwind CSS
+- **Modern UI**: Glass morphism design with Tailwind's utility classes
+- **Error Handling**: Graceful error handling for API failures with retry functionality
 
-## Tech Stack
+## Technologies Used
 
-- **TypeScript**: Strongly typed JavaScript for better development experience
-- **Vite**: Fast build tool and development server with TypeScript support
-- **CSS3**: Modern styling with flexbox and animations
-- **Vitest**: Fast unit testing framework with TypeScript support
-- **Switcheo APIs**: Token prices and icons
+- **React 18**: Modern React with hooks for state management
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **Vite**: Fast build tool and development server
+- **Vitest**: Unit testing framework
 
-## API Endpoints
+## Styling Architecture
+
+### Tailwind CSS Configuration
+- **Custom Color Palette**: Extended with primary and accent color schemes
+- **Custom Gradients**: Predefined gradients for buttons and backgrounds
+- **Custom Animations**: Enhanced animations including slow bounce and pulse
+- **Responsive Design**: Mobile-first approach with responsive breakpoints
+
+
+### UI Features
+- **Glass Morphism**: Translucent panels with backdrop blur effects
+- **Gradient Backgrounds**: Smooth gradients for interactive elements
+- **Micro-animations**: Hover states, loading spinners, and transitions
+- **Dark Theme**: Professionally designed dark color scheme
+- **Responsive Layout**: Adaptive layout for mobile and desktop
+
+## API Integration
 
 - **Token Prices**: `https://interview.switcheo.com/prices.json`
 - **Token Icons**: `https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/{SYMBOL}.svg`
@@ -30,134 +47,134 @@ A modern, interactive currency swap form, featuring real-time exchange rates and
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js (version 16 or higher)
 - npm or yarn
-- TypeScript knowledge (helpful but not required)
 
 ### Installation
 
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open your browser and navigate to `http://localhost:5173`
+
+### Building for Production
+
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
 npm run build
+```
 
-# Preview production build
-npm run preview
+### Running Tests
+
+```bash
+# Run tests once
+npm run test:run
 
 # Run tests in watch mode
 npm run test
 
-# Run tests once
-npm run test:run
-
 # Run tests with UI
 npm run test:ui
 
-# Generate test coverage report
+# Generate coverage report
 npm run coverage
 ```
 
-## Usage
+## How to Use
 
-1. Select the token you want to swap from in the "From" dropdown
-2. Enter the amount you want to swap
-3. Select the token you want to receive in the "To" dropdown
-4. View the calculated exchange amount in real-time
-5. Click "CONFIRM SWAP" to proceed (demo functionality)
+1. **Wait for Loading**: The app automatically loads available tokens from the API
+2. **Enter Amount**: Type the amount you want to swap in either the "From" or "To" field
+3. **Select Tokens**: Choose your source and target tokens from the dropdown menus (showing current prices)
+4. **View Token Info**: See token icons and current USD prices below each selection
+5. **Swap Tokens**: Click the swap button (⇅) to quickly flip the tokens
+6. **View Exchange Rate**: See the current exchange rate displayed below the inputs
+7. **Execute Swap**: Click "Swap Tokens" to simulate the token exchange transaction
 
 ## Project Structure
 
 ```
 src/
-├── main.ts              # Application entry point
-├── style.css            # Main stylesheet
-├── counter.ts           # Counter component with TypeScript types
-├── api.ts               # API utilities with TypeScript interfaces
-├── vite-env.d.ts        # Vite environment type declarations
+├── components/
+│   └── SwapForm.tsx          # Main swap form with Tailwind styling
+├── App.tsx                   # Root application component
+├── main.tsx                  # Application entry point
+├── api.ts                    # API utilities and token data handling
+├── style.css                 # Tailwind directives and custom components
 └── test/
-    ├── setup.ts         # Test environment setup
-    └── api.test.ts      # Comprehensive API tests with TypeScript
+    └── swap-form.test.ts     # Unit tests for swap logic and API functions
+
+Configuration:
+├── tailwind.config.js        # Tailwind CSS configuration
+├── postcss.config.js         # PostCSS configuration
+├── vite.config.ts           # Vite configuration with React plugin
+└── tsconfig.json            # TypeScript configuration
 ```
 
-### Configuration Files
+## API Functions
 
-```
-├── tsconfig.json        # Main TypeScript configuration
-├── tsconfig.node.json   # Node.js specific TypeScript config
-├── vitest.config.ts     # Testing configuration
-└── package.json         # Project dependencies and scripts
-```
+The application uses several API utility functions:
 
-## Development
+- `fetchTokenPrices()`: Fetches current token prices from Switcheo API
+- `getAvailableTokens()`: Gets all available tokens with icons and prices
+- `calculateExchange()`: Calculates exchange rates between tokens based on USD prices
+- `formatNumber()`: Formats numbers with appropriate decimal places
+- `getTokenIconUrl()`: Generates token icon URLs
+- `validateTokenIcon()`: Validates if a token icon exists
 
-The application is built with modern TypeScript and provides:
+## Data Flow
 
-### Type Safety Features
-- **Strong typing** for all API responses and data structures
-- **Interface definitions** for `TokenPrice`, `PriceMap`, and `Token` types
-- **Type-safe DOM manipulation** with proper element typing
-- **Comprehensive test coverage** with typed mocks and assertions
+1. **Component Mount**: `SwapForm` loads tokens using `getAvailableTokens()`
+2. **Token Selection**: User selects tokens from dropdowns populated with real data
+3. **Price Calculation**: Exchange rates calculated using `calculateExchange()` with real prices
+4. **Real-time Updates**: All calculations use live token prices from the API
+5. **Error Handling**: Graceful fallbacks for API failures or missing data
 
-### Development Features
-- CSS custom properties for theming
-- Async/await for API calls with proper error typing
-- Error boundaries for robust error handling
-- Responsive design principles
-- Hot module replacement in development
-- Strict TypeScript compilation settings
 
-### Type Definitions
-```typescript
-interface TokenPrice {
-  price: string;
-  currency: string;
-}
+### Animation & Interactions
+- **Hover Effects**: Smooth transformations and color transitions
+- **Loading States**: Animated spinners and skeleton loaders
+- **Focus States**: Accessible focus indicators with ring utilities
+- **Micro-interactions**: Button press animations and state feedback
 
-interface Token {
-  symbol: string;
-  price: number;
-  hasIcon: boolean;
-  iconUrl: string;
-}
-```
+## Error Handling
 
-## TypeScript Benefits
+- **Network Failures**: Graceful handling of API connection issues
+- **Invalid Data**: Robust validation and fallback for malformed API responses
+- **Missing Icons**: Silent fallback when token icons are unavailable
+- **Loading States**: Clear feedback during data fetching with Tailwind animations
+- **Retry Mechanism**: Users can retry failed operations
 
-This project showcases the advantages of using TypeScript in a real-world application:
+## Testing
 
-### 🛡️ **Type Safety**
-- Catch errors at compile time instead of runtime
-- IntelliSense support for better development experience
-- Refactoring confidence with type checking
+Comprehensive test suite covering:
 
-### 📝 **Better Documentation**
-- Self-documenting code through type annotations
-- Clear API contracts with interface definitions
-- Easier onboarding for new developers
+- Token exchange calculation logic
+- Number formatting functions
+- Real-world token swap scenarios
+- Edge cases and error conditions
+- API function behavior
 
-### 🧪 **Improved Testing**
-- Type-safe test mocks and assertions
-- Better test coverage with compile-time validation
-- Reduced false positives in test scenarios
+## Performance
 
-### 🚀 **Development Experience**
-- Auto-completion and error detection in IDE
-- Better code navigation and refactoring tools
-- Consistent code style across the project
+- **Tailwind CSS**: Purged CSS for minimal bundle size
+- **Component Optimization**: React.memo and useCallback where appropriate
+- **API Caching**: Efficient token data caching
+- **Lazy Loading**: On-demand resource loading
 
-## Contributing
+## Future Enhancements
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is part of a coding challenge and is for demonstration purposes.
+- **Real-time Price Updates**: WebSocket integration for live price feeds
+- **Historical Charts**: Price history visualization for selected tokens
+- **Transaction History**: Local storage of swap history
+- **Favorite Tokens**: Save frequently used token pairs
+- **Advanced Filtering**: Search and filter tokens by various criteria
+- **Slippage Protection**: Configurable slippage tolerance
+- **Multi-chain Support**: Support for tokens across different blockchains
+- **Theme Switching**: Light/dark mode toggle
+- **Custom Animations**: Enhanced Tailwind animation library
