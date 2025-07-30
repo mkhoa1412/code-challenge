@@ -2,6 +2,17 @@
 
 A modern React-based token swap form, fetching real-time token prices from Switcheo API.
 
+## 🚀 Live Demo
+
+**[View Live Demo on Vercel →](https://code-challenge-lovat-iota.vercel.app/)**
+
+Experience the full-featured token swap application with:
+- Real-time token prices from Switcheo API
+- Interactive token selection with icons
+- Live exchange rate calculations
+- Modern glassmorphism UI with Tailwind CSS
+- Complete form validation and toast notifications
+
 ## Features
 
 - **Real-time Token Prices**: Fetches current token prices from Switcheo API
